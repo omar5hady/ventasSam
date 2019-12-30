@@ -19,6 +19,7 @@ class CreateSucursalesTable extends Migration
             $table->string('cadena');
             $table->boolean('tipo')->default(0);//0 smart, 1 Premium
             $table->boolean('condicion')->default(1);
+            $table->double('venta_total')->default(0);
         });
     }
 

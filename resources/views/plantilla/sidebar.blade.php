@@ -37,7 +37,7 @@
             <li class="nav-item nav-dropdown">
                 <a class="nav-link nav-dropdown-toggle" href="#"><i class="fa fa-hdd-o"></i> Herramientas</a>
                 <ul class="nav-dropdown-items">
-                    <li class="nav-item">
+                    <li @click="menu=4" class="nav-item">
                         <a class="nav-link" href="#"><i class="fa fa-share-alt"></i> Shares</a>
                     </li>
                     <li class="nav-item">
@@ -51,9 +51,9 @@
                     <li class="nav-item" @click="menu=3">
                         <a class="nav-link" href="#"><i class="icon-user"></i> Usuarios</a>
                     </li>
-                    <li class="nav-item">
+                    {{-- <li class="nav-item">
                         <a class="nav-link" href="#"><i class="icon-user-following"></i> Roles</a>
-                    </li>
+                    </li> --}}
                 </ul>
             </li>
         </ul>

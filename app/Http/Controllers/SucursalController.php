@@ -65,4 +65,11 @@ class SucursalController extends Controller
         $sucursal->condicion = 0;
         $sucursal->save();
     }
+
+    public function updateVentas(Request $request){
+        $sucursal = Sucursal::findOrFail($request->id);
+        $sucursal->venta_total = $request->venta_total;
+        $sucursal->save();
+    }
+
 }

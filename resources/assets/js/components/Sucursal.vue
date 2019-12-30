@@ -36,6 +36,7 @@
                                         <th>PV</th>
                                         <th>Cadena</th>
                                         <th>Tipo</th>
+                                        <th>Ventas Totales</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -58,6 +59,10 @@
                                                 
                                             <td v-else v-text="'Premium'"></td>
                                         </template>
+                                        <td style="width:15%">
+                                            <input type="text" pattern="\d*" @keyup.enter="updateVentas(pv.id,$event.target.value)" :id="pv.id" :value="pv.venta_total"  v-on:keypress="isNumber($event)" class="form-control" >
+                                        </td>
+                                        
                                     </tr>                               
                                 </tbody>
                             </table>
@@ -217,7 +222,15 @@
                     console.log(error);
                 });
             },
-            
+            isNumber: function(evt) {
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
+                    evt.preventDefault();;
+                } else {
+                    return true;
+                }
+            },
             cambiarPagina(page, buscar){
                 let me = this;
                 //Actualiza la pagina actual
@@ -355,6 +368,26 @@
                     });
                 }
                 })
+            },
+            updateVentas(id,valor){
+                 let me = this;
+                //Con axios se llama el metodo update de FraccionaminetoController
+                axios.put('/pv/updateVentas',{
+                    'venta_total' : valor,
+                    'id' : id
+                }).then(function (response){
+                    me.listarPv(1,'');
+                    //window.alert("Cambios guardados correctamente");
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Cambios guardados correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
             },
             limpiarBusqueda(){
                 let me=this;

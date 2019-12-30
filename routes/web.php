@@ -40,6 +40,7 @@ Route::group(['middleware' => ['auth']],function(){
     Route::put('/pv/actualizar','SucursalController@update');
     Route::put('/pv/activar','SucursalController@activar');
     Route::put('/pv/desactivar','SucursalController@desactivar');
+    Route::put('/pv/updateVentas','SucursalController@updateVentas');
     
     Route::get('/roles','RolController@index');
     
