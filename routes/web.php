@@ -33,6 +33,7 @@ Route::group(['middleware' => ['auth']],function(){
     Route::put('/equipos/actualizar','EquipoController@update');
     Route::put('/equipos/activar','EquipoController@activar');
     Route::put('/equipos/desactivar','EquipoController@desactivar');
+    Route::get('/equipos/activos','EquipoController@getActivos');
     
     Route::get('/pv','SucursalController@index');
     Route::get('/pv/select','SucursalController@select');
@@ -49,6 +50,15 @@ Route::group(['middleware' => ['auth']],function(){
     Route::put('/user/actualizar','UserController@update');
     Route::put('/user/activar','UserController@activar');
     Route::put('/user/desactivar','UserController@desactivar');
+
+    //// ventas
+    Route::get('/ventas','VentaController@index');
+    Route::get('/ventas/indexDetalle','VentaController@indexDetalle');
+    Route::post('/ventas/registrar','VentaController@store');
+
+    /// Cuota
+    Route::get('/cuota','CuotaController@index');
+    Route::post('/cuota/registrar','CuotaController@store');
 });
 
 

@@ -19,6 +19,9 @@ Vue.component('equipo-component', require('./components/Equipo.vue').default);
 Vue.component('sucursal-component', require('./components/Sucursal.vue').default);
 Vue.component('user-component', require('./components/User.vue').default);
 
+Vue.component('ventas-component', require('./components/Venta.vue').default);
+Vue.component('cuota-component', require('./components/Cuota.vue').default);
+
 Vue.component('share-component', require('./components/Shares.vue').default);
 
 const app = new Vue({

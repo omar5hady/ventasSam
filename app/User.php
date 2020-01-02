@@ -40,4 +40,11 @@ class User extends Authenticatable
     public function persona(){
         return $this->belongsTo('App\Persona');
     }
+
+    public function venta(){
+        return $this->hasMany('App\Venta');
+    }
+    public function cuota(){
+        return $this->hasMany('App\Venta');
+    }
 }

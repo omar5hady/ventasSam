@@ -15,6 +15,14 @@
     <template v-if="menu==4">
         <share-component></share-component>
     </template>
+
+    <template v-if="menu==5">
+        <ventas-component></ventas-component>
+    </template>
+
+    <template v-if="menu==6">
+        <cuota-component></cuota-component>
+    </template>
 @endif
 
 

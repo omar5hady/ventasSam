@@ -16,4 +16,8 @@ class Sucursal extends Model
         return $this->hasMany('App\User');
     }
 
+    public function venta(){
+        return $this->hasMany('App\Venta');
+    }
+
 }

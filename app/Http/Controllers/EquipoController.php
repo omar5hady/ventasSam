@@ -58,4 +58,14 @@ class EquipoController extends Controller
         $equipo->condicion = 0;
         $equipo->save();
     }
+
+    public function getActivos(Request $request){
+        $equipos = Equipo::where('condicion','=',1)->orderBy('modelo','asc')->get();
+
+        foreach ($equipos as $equipo){
+            $equipo->cant = 0;
+        }
+
+        return['equipos'=>$equipos];
+    }
 }
