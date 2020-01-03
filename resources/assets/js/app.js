@@ -21,6 +21,7 @@ Vue.component('user-component', require('./components/User.vue').default);
 
 Vue.component('ventas-component', require('./components/Venta.vue').default);
 Vue.component('cuota-component', require('./components/Cuota.vue').default);
+Vue.component('inventario-component', require('./components/Inventario.vue').default);
 
 Vue.component('share-component', require('./components/Shares.vue').default);
 

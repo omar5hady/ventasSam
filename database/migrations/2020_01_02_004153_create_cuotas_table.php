@@ -23,6 +23,8 @@ class CreateCuotasTable extends Migration
             $table->double('smart_real')->default(0);
             $table->integer('qty_premium')->default(0);
             $table->integer('qty_smart')->default(0);
+            $table->integer('qty_premium_real')->default(0);
+            $table->integer('qty_smart_real')->default(0);
             $table->integer('month');
             $table->integer('year');
         });

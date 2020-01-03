@@ -56,6 +56,11 @@ Route::group(['middleware' => ['auth']],function(){
     Route::get('/ventas/indexDetalle','VentaController@indexDetalle');
     Route::post('/ventas/registrar','VentaController@store');
 
+    //// inventarios
+    Route::get('/inventarios','InventarioController@index');
+    Route::get('/inventarios/indexDetalle','InventarioController@indexDetalle');
+    Route::post('/inventarios/registrar','InventarioController@store');
+
     /// Cuota
     Route::get('/cuota','CuotaController@index');
     Route::post('/cuota/registrar','CuotaController@store');

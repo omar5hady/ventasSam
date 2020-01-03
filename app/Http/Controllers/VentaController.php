@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Venta;
 use App\Desc_venta;
+use App\Cuota;
+use App\Inventario;
+use App\Detalle_inventario;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Auth;
@@ -54,7 +57,6 @@ class VentaController extends Controller
                 ->orderBy('ventas.fecha','asc')->paginate(31);
             }
             
-
         }
         
 
@@ -67,7 +69,7 @@ class VentaController extends Controller
                 'from'          => $ventas->firstItem(),
                 'to'            => $ventas->lastItem(),
             ],
-            'ventas'=> $ventas , 'hoy'=>$hoy
+            'ventas'=> $ventas , 'hoy'=>$hoy 
         ];
     }
 
@@ -80,6 +82,13 @@ class VentaController extends Controller
 
         $premium = 0;
         $smart = 0;
+        $premiumCant = 0;
+        $smartCant = 0;
+
+        $mes = new Carbon($request->fecha);
+
+        $cuota = Cuota::where('month','=',$mes->month)->where('user_id','=',Auth::user()->id)->get();
+        $inventario = Inventario::where('sucursal_id','=',Auth::user()->sucursal_id)->orderBy('fecha','desc')->get();
         
         try{
             DB::beginTransaction(); 
@@ -97,6 +106,14 @@ class VentaController extends Controller
             {
                 if($det['cant'] != 0 || $det['cant']!= '0'){
 
+                    $det_id = Detalle_inventario::where('inventario_id','=',$inventario[0]->id)->where('equipo_id','=',$det['id'])->get();
+
+                    if(sizeof($det_id) > 0){
+                        $detalle = Detalle_inventario::findOrFail($det_id[0]->id);
+                        $detalle->cantidad-= $det['cant'];
+                        $detalle->save();
+                    }
+
                     $desc = new Desc_venta();
                     $desc->venta_id = $venta->id;
                     $desc->equipo_id = $det['id'];
@@ -105,14 +122,30 @@ class VentaController extends Controller
     
                     if($det['tipo'] == 0){
                         $smart+=$desc->total;
+                        $smartCant+= $desc->cantidad;
                     }                    
                     else{
                         $premium+=$desc->total;
+                        $premiumCant+= $desc->cantidad;
                     }
                     $desc->save();
 
                 }
             }
+
+            $calcCuota = Cuota::findOrFail($cuota[0]->id);
+            $calcCuota->premium_real += $premium;
+            $calcCuota->smart_real += $smart;
+            $calcCuota->qty_premium_real += $premiumCant;
+            $calcCuota->qty_smart_real += $smartCant;
+            $calcCuota->save();
+
+            $calcInventario = Inventario::findOrFail($inventario[0]->id);
+            $calcInventario->total_premium -= $premiumCant;
+            $calcInventario->total_smart -= $smartCant;
+            $calcInventario->total -= ($premiumCant + $smartCant);
+            $calcInventario->save();
+
             
             $venta->total_premium = $premium;
             $venta->total_smart = $smart;

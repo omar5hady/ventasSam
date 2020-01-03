@@ -29,7 +29,7 @@
                     <li @click="menu=6" class="nav-item">
                         <a class="nav-link" href="#"><i class="icon-wallet"></i> Cuota</a>
                     </li>
-                    <li class="nav-item">
+                    <li @click="menu=7" class="nav-item">
                         <a class="nav-link" href="#"><i class="fa fa-book"></i> Inventario</a>
                     </li>
                 </ul>

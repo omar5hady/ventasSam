@@ -23,6 +23,10 @@
     <template v-if="menu==6">
         <cuota-component></cuota-component>
     </template>
+
+    <template v-if="menu==7">
+        <inventario-component></inventario-component>
+    </template>
 @endif
 
 
