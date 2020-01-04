@@ -31,22 +31,35 @@
                                     <div class="form-group row collapse" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion" style="">
                                         <div class="card">
                                             <div class="card-header">
-                                                <i class="fa fa-check"></i>1er Semana 25%
+                                                <i class="fa fa-check"></i>1er Semana 25% &nbsp;&nbsp;
+                                                <strong>${{this.formatNumber(this.pesoTotal * 0.25)}}</strong> &nbsp;&nbsp;
+                                                <strong style="color: blue;" v-if="pesoTotalReal > pesoTotal*0.25" v-text="'Real: $'+formatNumber(pesoTotal*0.25)"></strong>
+                                                <strong style="color: blue;" v-else v-text="'Real: $'+formatNumber(pesoTotalReal)"></strong>
                                             </div>
                                         </div>
                                         <div class="card">
                                             <div class="card-header">
-                                                <i class="fa fa-check"></i>2da Semana  30%
+                                                <i class="fa fa-check"></i>2da Semana 30% &nbsp;&nbsp;
+                                                <strong>${{this.formatNumber(this.pesoTotal * 0.30)}}</strong> &nbsp;&nbsp;
+                                                <strong style="color: blue;" v-if="pesoTotalReal > pesoTotal*0.55" v-text="'Real: $'+formatNumber(pesoTotal*0.30)"></strong>
+                                                <strong style="color: blue;" v-else v-text="'Real: $'+formatNumber(pesoTotalReal - (pesoTotal*0.25))"></strong>
                                             </div>
                                         </div>
                                         <div class="card">
                                             <div class="card-header">
-                                                <i class="fa fa-check"></i>3er Semana 30%
+                                                <i class="fa fa-check"></i>3er Semana 30% &nbsp;&nbsp;
+                                                <strong>${{this.formatNumber(this.pesoTotal * 0.30)}}</strong> &nbsp;&nbsp;
+                                                <strong style="color: blue;" v-if="pesoTotalReal > pesoTotal*0.85" v-text="'Real: $'+formatNumber(pesoTotal*0.30)"></strong>
+                                                <strong style="color: blue;" v-else v-text="'Real: $'+formatNumber(pesoTotalReal - (pesoTotal*0.55))"></strong>
                                             </div>
                                         </div>
                                         <div class="card">
                                             <div class="card-header">
-                                                <i class="fa fa-check"></i>4ta Semana 15%
+                                                <i class="fa fa-check"></i>4ta Semana 15% &nbsp;&nbsp;
+                                                <strong>${{this.formatNumber(this.pesoTotal * 0.15)}}</strong> 
+                                                &nbsp;&nbsp;
+                                                <strong style="color: blue;" v-if="pesoTotalReal > pesoTotal" v-text="'Real: $'+formatNumber(pesoTotal*0.15)"></strong>
+                                                <strong style="color: blue;" v-else v-text="'Real: $'+formatNumber(pesoTotalReal - (pesoTotal*0.85))"></strong>
                                             </div>
                                         </div>
                                         
@@ -97,11 +110,15 @@
                                                 <center>
                                                     <strong>
                                                         <br>
-                                                        <h6>$ VENDIDO  /  PIEZAS VENDIDAS</h6>
+                                                        <h6>$ VENDIDO  /  PIEZAS VENDIDAS</h6><br>
+                                                        <h6 style="color: blue;">Ideal</h6>
+                                                        <h6>${{this.formatNumber(this.idealVendido)}}  /  {{this.idealPiezas}} = ${{this.formatNumber(this.ticketIdeal)}}</h6><br>
+                                                        <h6 style="color: red;">Real</h6>
+                                                        <h6>${{this.formatNumber(this.vendidoProm)}}  /  {{this.piezasProm}} = ${{this.formatNumber(this.ticketPromedio)}}</h6><br>
                                                     </strong>
                                                 </center><br>
                                                 Si es mas bajo del ideal significa que se esta vendiendo mas equipos baratos, <br>
-                                                Al contratio si es mas alto del ideal siginifica que se esta vendiendo mar caro.
+                                                Al contratio si es mas alto del ideal siginifica que se esta vendiendo mas caro.
                                             </div>
                                         </div>
                                     </div>
@@ -124,7 +141,9 @@
                                                 <center>
                                                     <strong>
                                                         <br>
-                                                        <h6>($ VENDIDO / DIA ACTUAL)  X  DIAS DEL MES</h6>
+                                                        <h6>($ VENDIDO / DIA ACTUAL)  X  DIAS DEL MES</h6><br>
+                                                        <h6>($ {{this.formatNumber(this.vendidoMes)}} / {{this.diaActual}})  X  {{this.diasMes}}</h6>
+                                                        <h6 style="color: blue;"> = ${{ this.formatNumber(this.forecast) }}</h6>
                                                     </strong>
                                                 </center><br>
                                                 Este resultado nos dara una cantidad de cierre en pesos, si queremos sacar un porcentaje se divide
@@ -151,7 +170,12 @@
                                                 <center>
                                                     <strong>
                                                         <br>
-                                                        <h6>($ VENDIDO / CUOTA)  X  100</h6>
+                                                        <h6>($ VENDIDO / CUOTA)  X  100</h6><br>
+
+                                                        <h6>( $ {{this.formatNumber(this.pesoTotalReal)}} / $ {{this.formatNumber(this.pesoTotal)}} )  X  100</h6>
+                                                        <h6 style="color: blue;"> = {{ this.alcance.toFixed(2)}}%</h6>
+
+
                                                     </strong>
                                                 </center><br>
                                             </div>
@@ -189,9 +213,13 @@
                                                     <br> Teniendo esta información se realiza de la siguiente manera <br>
                                                     INVENTARIO ACTUAL EN PIEZAS <br>
                                                     PROMEDIO DE VENTAS <br> <br>
-                                                    <strong>Ejemplo: 350/89 = 3.9 WOS   </strong> <br>
+                                                    <h6 style="color: blue;">Ejemplo Real: {{this.inventario}}/{{this.ventas4weeks}} = {{this.wos.toFixed(2)}} WOS   </h6> <br>
                                                     Se considera un inventario sano abajo de 4 WOS, esto se puede sacar en general o 
-                                                    por modelo y asi pueden ver que equipos se estan rezagando y enfocarse en desplazarlos.
+                                                    por modelo y asi pueden ver que equipos se estan rezagando y enfocarse en desplazarlos. <br><br>
+
+                                                    <div v-for="equipo in arrayInventario" :key="equipo.id">
+                                                        <li><strong>{{equipo.modelo}} : </strong>{{equipo.cantidad}}/{{equipo.venta.toFixed(2)}} = {{equipo.wos.toFixed(2)}} WOS </li>
+                                                    </div>
                                                 </center><br>
                                             </div>
                                         </div>
@@ -225,10 +253,44 @@
 <!-- ************************************************************************************************************************************  -->
 
 <script>
+import { timeout } from 'q';
     export default {
         data(){
             return{
-               
+                arrayPeso:[],
+                arrayProm:[],
+                arrayInventario:[],
+                ///Peso
+                    pesoTotal:0,
+                    pesoPremium:0,
+                    pesoSmart:0,
+                    pesoPremiumReal:0,
+                    pesoSmartReal:0,
+                    pesoTotalReal:0,
+
+                //ticketProm
+                    idealPiezas:0,
+                    idealVendido:0,
+                    ticketIdeal:0,
+
+                    piezasProm:0,
+                    vendidoProm:0,
+                    ticketPromedio:0,
+
+                //Alcance
+                    alcance:0,
+
+                //forecast
+                    vendidoMes:0,
+                    diaActual:0,
+                    diasMes:0,
+                    forecast:0,
+
+                //Wos
+                    inventario:0,
+                    ventas4weeks:0,
+                    wos:0
+
             }
         },
         computed:{
@@ -237,11 +299,98 @@
 
         
         methods : {
-            
+            formatNumber(value) {
+                let val = (value/1).toFixed(2)
+                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+            },
+            getPeso(){
+                let me = this;
+                me.arrayPeso=[];
+                var url = '/share/peso';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayPeso = respuesta.total;
+
+                    me.pesoPremium = me.arrayPeso[0].premium;
+                    me.pesoSmart = me.arrayPeso[0].smart;
+                    me.pesoTotal = me.pesoPremium + me.pesoSmart;
+
+                    me.idealVendido = me.pesoTotal;
+                    me.idealPiezas = me.arrayPeso[0].qty_premium + me.arrayPeso[0].qty_smart;
+                    me.ticketIdeal = me.idealVendido/me.idealPiezas;
+
+                    me.pesoPremiumReal = me.arrayPeso[0].premium_real;
+                    me.pesoSmartReal = me.arrayPeso[0].smart_real;
+                    me.pesoTotalReal = me.pesoPremiumReal + me.pesoSmartReal;
+
+                    me.alcance = (me.pesoTotalReal/me.pesoTotal)*100;
+
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
+            getTicketPromedio(){
+                let me = this;
+                me.arrayProm=[];
+                var url = '/share/ticketPromedio';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.vendidoProm = respuesta.ventas;
+                    me.piezasProm = respuesta.cantidades;
+
+                    me.ticketPromedio = me.vendidoProm/me.piezasProm;
+                   
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
+            getForecast(){
+                let me = this;
+                var url = '/share/forecast';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.vendidoMes = respuesta.ventas;
+                    me.diaActual = respuesta.hoy;
+                    me.diasMes = respuesta.diasMes;
+
+                    me.forecast = (me.vendidoMes/me.diaActual)*me.diasMes;
+
+                    me.inventario = respuesta.inventario;
+                    me.ventas4weeks = respuesta.ventas_30/4;
+                    me.wos = me.inventario/me.ventas4weeks;
+                   
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
+            getWos(){
+                let me = this;
+                me.arrayProm=[];
+                var url = '/share/wosDetallado';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayInventario = respuesta.detalle_inventario;
+                   
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
             
         },
        
         mounted() {
+            this.getPeso();
+            this.getTicketPromedio();
+            this.getForecast();
+            this.getWos();
+            
         }
     }
 </script>

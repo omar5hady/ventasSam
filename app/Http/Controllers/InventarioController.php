@@ -118,7 +118,8 @@ class InventarioController extends Controller
     public function indexDetalle( Request $request ){
 
         $inventarios = Detalle_inventario::join('equipos','detalle_inventarios.equipo_id','=','equipos.id')
-                ->select( 'detalle_inventarios.cantidad','equipos.modelo','equipos.tipo', 'detalle_inventarios.inventario_id')
+                ->select( 'detalle_inventarios.cantidad','equipos.modelo','equipos.tipo', 'detalle_inventarios.inventario_id',
+                'detalle_inventarios.id')
                 ->where('detalle_inventarios.inventario_id','=',$request->id)
                 ->orderBy('equipos.modelo','asc')->get();
 

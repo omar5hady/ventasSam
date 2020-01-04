@@ -64,6 +64,13 @@ Route::group(['middleware' => ['auth']],function(){
     /// Cuota
     Route::get('/cuota','CuotaController@index');
     Route::post('/cuota/registrar','CuotaController@store');
+
+    //Share
+    Route::get('/share/peso','ShareController@peso');
+    Route::get('/share/ticketPromedio','ShareController@ticketPromedio');
+    Route::get('/share/forecast','ShareController@forecast');
+    Route::get('/share/wosDetallado','ShareController@wosDetallado');
+    
 });
 
 
