@@ -25,6 +25,7 @@ Vue.component('cuota-component', require('./components/Cuota.vue').default);
 Vue.component('inventario-component', require('./components/Inventario.vue').default);
 
 Vue.component('share-component', require('./components/Shares.vue').default);
+Vue.component('share-admin', require('./components/BasicoAdmin.vue').default);
 
 const app = new Vue({
     el: '#app',

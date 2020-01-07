@@ -40,9 +40,15 @@
             <li class="nav-item nav-dropdown">
                 <a class="nav-link nav-dropdown-toggle" href="#"><i class="fa fa-hdd-o"></i> Herramientas</a>
                 <ul class="nav-dropdown-items">
+                    @if(Auth::user()->rol_id == 1)
+                    <li @click="menu=9" class="nav-item">
+                        <a class="nav-link" href="#"><i class="fa fa-share-alt"></i> Basicos</a>
+                    </li>
+                    @elseif(Auth::user()->rol_id == 2)
                     <li @click="menu=4" class="nav-item">
                         <a class="nav-link" href="#"><i class="fa fa-share-alt"></i> Basicos</a>
                     </li>
+                    @endif
                     <li class="nav-item">
                         <a class="nav-link" href="#"><i class="fa fa-mixcloud"></i> Compartidos</a>
                     </li>

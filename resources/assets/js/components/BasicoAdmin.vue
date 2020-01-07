@@ -13,6 +13,17 @@
 
                 <template>
                     <div class="card-body"> 
+                         <div class="form-group row">
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <select class="form-control" v-model="vendedor_id">
+                                        <option value="">Seleccione</option>
+                                        <option v-for="vendedor in arrayVendedores" :key="vendedor.id" :value="vendedor.id" v-text="vendedor.nombre + ' ' + vendedor.apellidos "></option>
+                                    </select>
+                                    <button type="submit" @click="getForecast(),getPeso(),getTicketPromedio(),getWos()" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                </div>
+                            </div>
+                        </div>
                         <h5 v-text="'SHARES'"></h5>
                             <div class="form-group row border" id="accordion" role="tablist">
                                 <div class="col-md-12">
@@ -299,6 +310,8 @@ import { timeout } from 'q';
                 arrayPeso:[],
                 arrayProm:[],
                 arrayInventario:[],
+                arrayVendedores:[],
+                vendedor_id:'',
                 ///Peso
                     pesoTotal:0,
                     pesoPremium:0,
@@ -348,7 +361,7 @@ import { timeout } from 'q';
             getPeso(){
                 let me = this;
                 me.arrayPeso=[];
-                var url = '/share/peso';
+                var url = '/share/pesoAdmn?buscar='+me.vendedor_id;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayPeso = respuesta.total;
@@ -376,7 +389,10 @@ import { timeout } from 'q';
             getTicketPromedio(){
                 let me = this;
                 me.arrayProm=[];
-                var url = '/share/ticketPromedio';
+                me.vendidoProm = 0;
+                me.piezasProm = 0;
+                me.ticketPromedio = 0;
+                var url = '/share/ticketPromedioAdmn?buscar='+me.vendedor_id;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.vendidoProm = respuesta.ventas;
@@ -392,7 +408,7 @@ import { timeout } from 'q';
 
             getForecast(){
                 let me = this;
-                var url = '/share/forecast';
+                var url = '/share/forecastAdmn?buscar='+me.vendedor_id;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.vendidoMes = respuesta.ventas;
@@ -416,7 +432,7 @@ import { timeout } from 'q';
             getWos(){
                 let me = this;
                 me.arrayProm=[];
-                var url = '/share/wosDetallado';
+                var url = '/share/wosDetalladoAdmn?buscar='+me.vendedor_id;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayInventario = respuesta.detalle_inventario;
@@ -425,6 +441,20 @@ import { timeout } from 'q';
                 .catch(function (error) {
                     console.log(error);
                 });
+            },
+
+            selectVendedor(){
+                let me = this;
+                me.arrayVendedores=[];
+                var url = '/selectVendedor';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayVendedores = respuesta.personas;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+              
             },
 
             verWodInventario(){
@@ -442,6 +472,7 @@ import { timeout } from 'q';
             this.getTicketPromedio();
             this.getForecast();
             this.getWos();
+            this.selectVendedor();
             
         }
     }

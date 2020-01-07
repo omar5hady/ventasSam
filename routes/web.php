@@ -76,6 +76,12 @@ Route::group(['middleware' => ['auth']],function(){
     Route::get('/share/ticketPromedio','ShareController@ticketPromedio');
     Route::get('/share/forecast','ShareController@forecast');
     Route::get('/share/wosDetallado','ShareController@wosDetallado');
+
+    //ShareAdmin
+    Route::get('/share/pesoAdmn','ShareController@pesoAdmn');
+    Route::get('/share/ticketPromedioAdmn','ShareController@ticketPromedioAdmn');
+    Route::get('/share/forecastAdmn','ShareController@forecastAdmn');
+    Route::get('/share/wosDetalladoAdmn','ShareController@wosDetalladoAdmn');
     
 });
 

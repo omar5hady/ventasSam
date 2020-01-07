@@ -31,6 +31,10 @@
     <template v-if="menu==8">
         <cortes-component rol-id="{{Auth::user()->rol_id}}"></cortes-component>
     </template>
+
+    <template v-if="menu==9">
+        <share-admin></share-admin>
+    </template>
 @endif
 
 

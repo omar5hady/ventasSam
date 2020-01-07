@@ -77,6 +77,16 @@ class InventarioController extends Controller
         
         try{
             DB::beginTransaction(); 
+            
+            $des = Inventario::where('sucursal_id','=',$sucursal_id)->get();
+            if(sizeOf($des))
+                foreach($des as $ep=>$det)
+                {
+                    $det->activo = 0;
+                    $det->save();
+                }
+
+
             $inventario = new Inventario();
             $inventario->sucursal_id = $sucursal_id;
             $inventario->fecha = $request->fecha;
