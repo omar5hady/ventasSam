@@ -14,4 +14,12 @@ class Equipo extends Model
         return $this->hasMany('App\Desc_venta');
     }
 
+    public function desc_corte(){
+        return $this->hasMany('App\Desc_venta');
+    }
+
+    public function destalle_inventario(){
+        return $this->hasMany('App\Detalle_inventario');
+    }
+
 }

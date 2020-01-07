@@ -13,6 +13,7 @@ class CuotaController extends Controller
     public function index(Request $request){
 
         $month = $request->month;
+        $user_id = $request->user_id;
         $fecha = Carbon::now();
         $hoy =  $fecha->toDateString();
         $mes = $fecha->month;
@@ -33,12 +34,28 @@ class CuotaController extends Controller
         }
         else{
             if($month == ''){
-                $cuotas = Cuota::where('month','=',$mes)
+                if($user_id == ''){
+                    $cuotas = Cuota::where('month','=',$mes)
                         ->where('year','=',$anio)->paginate(8);
+                }
+                else{
+                    $cuotas = Cuota::where('month','=',$mes)
+                        ->where('year','=',$anio)
+                        ->where('user_id','=',$user_id)->paginate(8);
+                }
+                
             }
             else{
-                 $cuotas = Cuota::where('month','=',$month)
+                if($user_id == ''){
+                    $cuotas = Cuota::where('month','=',$month)
                         ->where('year','=',$anio)->paginate(8);
+                }
+                else{
+                    $cuotas = Cuota::where('month','=',$month)
+                        ->where('user_id','=',$user_id)
+                        ->where('year','=',$anio)->paginate(8);
+                }
+                 
             }
         }
 

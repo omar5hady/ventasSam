@@ -147,7 +147,14 @@
                                                     </strong>
                                                 </center><br>
                                                 Este resultado nos dara una cantidad de cierre en pesos, si queremos sacar un porcentaje se divide
-                                                 esa cantidad entre la cuota y multiplicar X 100
+                                                esa cantidad entre la cuota y multiplicar X 100. <br>
+                                                <center>
+                                                    <strong>
+                                                        <br>
+                                                        <h6>( {{this.formatNumber(this.forecast)}} / {{this.formatNumber(this.pesoTotal)}})  X  100</h6>
+                                                        <h6 style="color: blue;"> = {{ this.formatNumber(this.porcentajeForecast) }} %</h6>
+                                                    </strong>
+                                                </center>
                                             </div>
                                         </div>
                                     </div>
@@ -217,8 +224,8 @@
                                                     Se considera un inventario sano abajo de 4 WOS, esto se puede sacar en general o 
                                                     por modelo y asi pueden ver que equipos se estan rezagando y enfocarse en desplazarlos. <br><br>
 
-                                                    <div v-for="equipo in arrayInventario" :key="equipo.id">
-                                                        <li><strong>{{equipo.modelo}} : </strong>{{equipo.cantidad}}/{{equipo.venta.toFixed(2)}} = {{equipo.wos.toFixed(2)}} WOS </li>
+                                                    <div>
+                                                        <button type="button" class="btn btn-success" @click="verWodInventario()">Ver Wod por equipo</button>
                                                     </div>
                                                 </center><br>
                                             </div>
@@ -242,6 +249,38 @@
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
+
+            <!--- Modal Equipos --->
+            <!--Inicio del modal agregar/actualizar-->
+            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="'Wos Inventario'"></h4>
+                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div>
+                                <div class="form-group row" v-for="equipo in arrayInventario" :key="equipo.id">
+                                    <label class="col-md-2 form-control-label" for="text-input"></label>
+                                    <div class="card-body">
+                                        <li><strong>{{equipo.modelo}} : </strong>{{equipo.cantidad}}/{{equipo.venta.toFixed(2)}} = {{equipo.wos.toFixed(2)}} WOS </li>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!--Fin del modal-->
 
             
          
@@ -285,11 +324,14 @@ import { timeout } from 'q';
                     diaActual:0,
                     diasMes:0,
                     forecast:0,
+                    porcentajeForecast:0,
 
                 //Wos
                     inventario:0,
                     ventas4weeks:0,
-                    wos:0
+                    wos:0,
+
+                modal : 0
 
             }
         },
@@ -362,6 +404,8 @@ import { timeout } from 'q';
                     me.inventario = respuesta.inventario;
                     me.ventas4weeks = respuesta.ventas_30/4;
                     me.wos = me.inventario/me.ventas4weeks;
+
+                    me.porcentajeForecast = (me.forecast/me.pesoTotal)*100;
                    
                 })
                 .catch(function (error) {
@@ -382,6 +426,14 @@ import { timeout } from 'q';
                     console.log(error);
                 });
             },
+
+            verWodInventario(){
+                this.modal = 1;
+            },
+
+            cerrarModal(){
+                this.modal = 0;
+            }
             
         },
        

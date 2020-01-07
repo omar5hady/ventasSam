@@ -17,15 +17,19 @@
     </template>
 
     <template v-if="menu==5">
-        <ventas-component></ventas-component>
+        <ventas-component rol-id="{{Auth::user()->rol_id}}"></ventas-component>
     </template>
 
     <template v-if="menu==6">
-        <cuota-component></cuota-component>
+        <cuota-component rol-id="{{Auth::user()->rol_id}}"></cuota-component>
     </template>
 
     <template v-if="menu==7">
-        <inventario-component></inventario-component>
+        <inventario-component rol-id="{{Auth::user()->rol_id}}"></inventario-component>
+    </template>
+
+    <template v-if="menu==8">
+        <cortes-component rol-id="{{Auth::user()->rol_id}}"></cortes-component>
     </template>
 @endif
 

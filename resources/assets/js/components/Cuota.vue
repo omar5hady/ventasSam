@@ -34,6 +34,12 @@
                                         <option value=11>Noviembre</option>
                                         <option value=12>Diciembre</option>
                                     </select>
+                                </div>
+                                <div class="input-group">
+                                    <select class="form-control" v-model="vendedor_id"  v-if="rolId == 1">
+                                        <option value="">Seleccione</option>
+                                        <option v-for="vendedor in arrayVendedores" :key="vendedor.id" :value="vendedor.id" v-text="vendedor.nombre + ' ' + vendedor.apellidos "></option>
+                                    </select>
                                     <button type="submit" @click="listarCuota(1,buscar)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
@@ -167,6 +173,9 @@
 
 <script>
     export default {
+        props:{
+            rolId:{type: String}
+        },
         data(){
             return{
                 proceso:false,
@@ -175,7 +184,9 @@
                 smart: 0,
                 qty_premium:0,
                 qty_smart : 0,
+                vendedor_id:'',
                 arrayCuota : [],
+                arrayVendedores : [],
                 modal : 0,
                 tituloModal : '',
                 tipoAccion: 0,
@@ -225,7 +236,7 @@
             /**Metodo para mostrar los registros */
             listarCuota(page, buscar){
                 let me = this;
-                var url = '/cuota?page=' + page + '&month=' + buscar;
+                var url = '/cuota?page=' + page + '&month=' + buscar  + '&user_id=' + me.vendedor_id;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayCuota = respuesta.cuotas.data;
@@ -255,6 +266,19 @@
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
                 me.listarCuota(page,buscar);
+            },
+            selectVendedor(){
+                let me = this;
+                me.arrayVendedores=[];
+                var url = '/selectVendedor';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayVendedores = respuesta.personas;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+              
             },
             /**Metodo para registrar  */
             registrarCuota(){
@@ -342,6 +366,7 @@
         },
         mounted() {
             this.listarCuota(1,this.buscar);
+            this.selectVendedor();
         }
     }
 </script>

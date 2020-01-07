@@ -146,4 +146,16 @@ class UserController extends Controller
         $user->save();
     }
 
+    public function selectVendedor(Request $request){
+        $personas = User::join('personas','users.id','=','personas.id')
+            ->select('personas.id','personas.nombre','personas.apellidos','users.rol_id','users.condicion')
+            ->where('users.rol_id','=',2)
+            ->where('users.condicion','=',1)
+            ->orderBy('personas.nombre', 'desc')
+            ->orderBy('personas.apellidos', 'desc')
+            ->get();
+
+        return ['personas'=>$personas];
+    }
+
 }

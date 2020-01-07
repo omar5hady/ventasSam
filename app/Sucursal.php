@@ -20,4 +20,12 @@ class Sucursal extends Model
         return $this->hasMany('App\Venta');
     }
 
+    public function inventario(){
+        return $this->hasMany('App\Inventario');
+    }
+
+    public function corte(){
+        return $this->hasMany('App\Corte');
+    }
+
 }

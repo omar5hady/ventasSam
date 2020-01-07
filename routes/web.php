@@ -46,6 +46,7 @@ Route::group(['middleware' => ['auth']],function(){
     Route::get('/roles','RolController@index');
     
     Route::get('/user','UserController@index');
+    Route::get('/selectVendedor','UserController@selectVendedor');
     Route::post('/user/registrar','UserController@store');
     Route::put('/user/actualizar','UserController@update');
     Route::put('/user/activar','UserController@activar');
@@ -55,6 +56,11 @@ Route::group(['middleware' => ['auth']],function(){
     Route::get('/ventas','VentaController@index');
     Route::get('/ventas/indexDetalle','VentaController@indexDetalle');
     Route::post('/ventas/registrar','VentaController@store');
+
+    //// cortes
+    Route::get('/cortes','CorteController@index');
+    Route::get('/cortes/indexDetalle','CorteController@indexDetalle');
+    Route::post('/cortes/registrar','CorteController@store');
 
     //// inventarios
     Route::get('/inventarios','InventarioController@index');

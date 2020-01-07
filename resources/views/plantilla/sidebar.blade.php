@@ -26,6 +26,9 @@
                     <li @click="menu=5" class="nav-item">
                         <a class="nav-link" href="#"><i class="icon-basket"></i> Ventas</a>
                     </li>
+                    <li @click="menu=8" class="nav-item">
+                        <a class="nav-link" href="#"><i class="icon-basket"></i> Cortes</a>
+                    </li>
                     <li @click="menu=6" class="nav-item">
                         <a class="nav-link" href="#"><i class="icon-wallet"></i> Cuota</a>
                     </li>
@@ -38,7 +41,7 @@
                 <a class="nav-link nav-dropdown-toggle" href="#"><i class="fa fa-hdd-o"></i> Herramientas</a>
                 <ul class="nav-dropdown-items">
                     <li @click="menu=4" class="nav-item">
-                        <a class="nav-link" href="#"><i class="fa fa-share-alt"></i> Shares</a>
+                        <a class="nav-link" href="#"><i class="fa fa-share-alt"></i> Basicos</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#"><i class="fa fa-mixcloud"></i> Compartidos</a>

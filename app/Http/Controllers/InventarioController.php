@@ -30,7 +30,9 @@ class InventarioController extends Controller
                 $inventarios = Inventario::join('sucursales','inventarios.sucursal_id','=','sucursales.id')
                 ->select('inventarios.id','inventarios.fecha','inventarios.total','inventarios.total_premium','inventarios.total_smart',
                         'sucursales.pv','sucursales.cadena')
-                ->where('inventarios.fecha','=',$buscar)
+                ->whereMonth('inventarios.fecha',Carbon::now()->month)
+                ->whereYear('inventarios.fecha',Carbon::now()->year)
+                ->where('inventarios.sucursal_id','=',$buscar)
                 ->orderBy('inventarios.fecha','desc')->take(1)->get();
             }
             

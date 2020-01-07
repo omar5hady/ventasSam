@@ -20,6 +20,7 @@ Vue.component('sucursal-component', require('./components/Sucursal.vue').default
 Vue.component('user-component', require('./components/User.vue').default);
 
 Vue.component('ventas-component', require('./components/Venta.vue').default);
+Vue.component('cortes-component', require('./components/Corte.vue').default);
 Vue.component('cuota-component', require('./components/Cuota.vue').default);
 Vue.component('inventario-component', require('./components/Inventario.vue').default);
 

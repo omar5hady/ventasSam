@@ -19,22 +19,46 @@ class VentaController extends Controller
         $fecha = Carbon::now();
         $hoy =  $fecha->toDateString();
         $buscar = $request->buscar;
+        $buscar2 = $request->buscar2;
+        $sucursal_id = $request->sucursal_id;
 
         if(Auth::user()->rol_id == 1){
             if($buscar == ''){
-                $ventas = Venta::join('sucursales','ventas.sucursal_id','=','sucursales.id')
-                ->select('ventas.id','ventas.fecha','ventas.total','ventas.total_premium','ventas.total_smart',
-                        'sucursales.pv','sucursales.cadena','ventas.promocion')
-                ->whereMonth('ventas.fecha',Carbon::now()->month)
-                ->whereYear('ventas.fecha',Carbon::now()->year)
-                ->orderBy('ventas.fecha','asc')->paginate(31);
+                if($sucursal_id == ''){
+                    $ventas = Venta::join('sucursales','ventas.sucursal_id','=','sucursales.id')
+                    ->select('ventas.id','ventas.fecha','ventas.total','ventas.total_premium','ventas.total_smart',
+                            'sucursales.pv','sucursales.cadena','ventas.promocion')
+                    ->whereMonth('ventas.fecha',Carbon::now()->month)
+                    ->whereYear('ventas.fecha',Carbon::now()->year)
+                    ->orderBy('ventas.fecha','asc')->paginate(31);
+                }
+                else{
+                    $ventas = Venta::join('sucursales','ventas.sucursal_id','=','sucursales.id')
+                    ->select('ventas.id','ventas.fecha','ventas.total','ventas.total_premium','ventas.total_smart',
+                            'sucursales.pv','sucursales.cadena','ventas.promocion')
+                    ->whereMonth('ventas.fecha',Carbon::now()->month)
+                    ->whereYear('ventas.fecha',Carbon::now()->year)
+                    ->where('ventas.sucursal_id','=',$sucursal_id)
+                    ->orderBy('ventas.fecha','asc')->paginate(31);
+                }
+                //->whereBetween($criterio, [$buscar, $buscar3])
             }
             else{
-                $ventas = Venta::join('sucursales','ventas.sucursal_id','=','sucursales.id')
-                ->select('ventas.id','ventas.fecha','ventas.total','ventas.total_premium','ventas.total_smart',
-                        'sucursales.pv','sucursales.cadena','ventas.promocion')
-                ->where('ventas.fecha','=',$buscar)
-                ->orderBy('ventas.fecha','asc')->paginate(31);
+                if($sucursal_id == ''){
+                    $ventas = Venta::join('sucursales','ventas.sucursal_id','=','sucursales.id')
+                    ->select('ventas.id','ventas.fecha','ventas.total','ventas.total_premium','ventas.total_smart',
+                            'sucursales.pv','sucursales.cadena','ventas.promocion')
+                    ->whereBetween('ventas.fecha', [$buscar, $buscar2])
+                    ->orderBy('ventas.fecha','asc')->paginate(31);
+                }
+                else{
+                    $ventas = Venta::join('sucursales','ventas.sucursal_id','=','sucursales.id')
+                    ->select('ventas.id','ventas.fecha','ventas.total','ventas.total_premium','ventas.total_smart',
+                            'sucursales.pv','sucursales.cadena','ventas.promocion')
+                    ->whereBetween('ventas.fecha', [$buscar, $buscar2])
+                    ->where('ventas.sucursal_id','=',$sucursal_id)
+                    ->orderBy('ventas.fecha','asc')->paginate(31);
+                }
             }
             
         }
@@ -52,11 +76,10 @@ class VentaController extends Controller
                 $ventas = Venta::join('sucursales','ventas.sucursal_id','=','sucursales.id')
                 ->select('ventas.id','ventas.fecha','ventas.total','ventas.total_premium','ventas.total_smart',
                         'sucursales.pv','sucursales.cadena','ventas.promocion')
-                ->where('ventas.fecha','=',$buscar)
+                ->whereBetween('ventas.fecha', [$buscar, $buscar2])
                 ->where('ventas.user_id','=',Auth::user()->id)
                 ->orderBy('ventas.fecha','asc')->paginate(31);
-            }
-            
+            } 
         }
         
 

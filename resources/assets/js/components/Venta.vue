@@ -17,9 +17,16 @@
                     </div>
                     <div class="card-body">
                         <div class="form-group row">
-                            <div class="col-md-6">
+                            <div class="col-md-8">
                                 <div class="input-group">
                                     <input type="date"  v-model="buscar" @keyup.enter="listarVentas(1,buscar)" class="form-control" placeholder="Fecha a buscar">
+                                    <input type="date"  v-model="buscar2" @keyup.enter="listarVentas(1,buscar)" class="form-control" placeholder="Fecha a buscar">
+                                </div>
+                                <div class="input-group">
+                                    <select class="form-control" v-model="sucursal_id"  v-if="rolId == 1">
+                                        <option value="">Seleccione</option>
+                                        <option v-for="sucursal in arraySucursales" :key="sucursal.id" :value="sucursal.id" v-text="sucursal.pv + ' | ' + sucursal.cadena "></option>
+                                    </select>
                                     <button type="submit" @click="listarVentas(1,buscar)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
@@ -223,6 +230,9 @@
 
 <script>
     export default {
+        props:{
+            rolId:{type: String}
+        },
         data(){
             return{
                 proceso:false,
@@ -235,11 +245,13 @@
                 arrayVentas  : [],
                 arrayEquipos : [],
                 arrayDetalle : [],
+                arraySucursales : [],
                 modal : 0,
                 modal2 : 0,
                 tituloModal : '',
                 tipoAccion: 0,
                 errorVenta : 0,
+                sucursal_id: '',
                 errorMostrarMsjVenta : [],
                 pagination : {
                     'total' : 0,         
@@ -251,6 +263,7 @@
                 },
                 offset : 3,
                 buscar : '',
+                buscar2 : '',
             }
         },
         computed:{
@@ -285,7 +298,7 @@
             /**Metodo para mostrar los registros */
             listarVentas(page, buscar){
                 let me = this;
-                var url = '/ventas?page=' + page + '&buscar=' + buscar;
+                var url = '/ventas?page=' + page + '&buscar=' + buscar + '&buscar2=' + me.buscar2 + '&sucursal_id=' + me.sucursal_id;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayVentas = respuesta.ventas.data;
@@ -303,6 +316,19 @@
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
                 me.listarVentas(page,buscar);
+            },
+            selectSucursal(){
+                let me = this;
+                me.arraySucursales=[];
+                var url = '/pv/select';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arraySucursales = respuesta.sucursales;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+              
             },
             /**Metodo para registrar  */
             registrarVenta(){
@@ -431,6 +457,7 @@
         },
         mounted() {
             this.listarVentas(1,this.buscar);
+            this.selectSucursal();
         }
     }
 </script>
