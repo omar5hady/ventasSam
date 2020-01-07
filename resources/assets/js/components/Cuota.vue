@@ -53,6 +53,7 @@
                                         <th>Qty Smart</th>
                                         <th>Premium</th>
                                         <th>Qty Premium</th>
+                                        <th v-if="rolId == 1">Vendedor</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -79,6 +80,7 @@
                                         <td>
                                             <span class="badge2 badge-dark" v-text="cuota.qty_premium"></span>
                                         </td>
+                                        <td v-if="rolId == 1" v-text="cuota.usuario"></td>
                                     </tr>                               
                                 </tbody>
                             </table>

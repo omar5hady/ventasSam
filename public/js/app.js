@@ -2896,6 +2896,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     rolId: {
@@ -33862,7 +33864,21 @@ var render = function() {
               "table",
               { staticClass: "table table-bordered table-striped table-sm" },
               [
-                _vm._m(1),
+                _c("thead", [
+                  _c("tr", [
+                    _c("th", [_vm._v("Mes")]),
+                    _vm._v(" "),
+                    _c("th", [_vm._v("Smart")]),
+                    _vm._v(" "),
+                    _c("th", [_vm._v("Qty Smart")]),
+                    _vm._v(" "),
+                    _c("th", [_vm._v("Premium")]),
+                    _vm._v(" "),
+                    _c("th", [_vm._v("Qty Premium")]),
+                    _vm._v(" "),
+                    _vm.rolId == 1 ? _c("th", [_vm._v("Vendedor")]) : _vm._e()
+                  ])
+                ]),
                 _vm._v(" "),
                 _c(
                   "tbody",
@@ -33949,7 +33965,13 @@ var render = function() {
                             staticClass: "badge2 badge-dark",
                             domProps: { textContent: _vm._s(cuota.qty_premium) }
                           })
-                        ])
+                        ]),
+                        _vm._v(" "),
+                        _vm.rolId == 1
+                          ? _c("td", {
+                              domProps: { textContent: _vm._s(cuota.usuario) }
+                            })
+                          : _vm._e()
                       ],
                       2
                     )
@@ -34323,24 +34345,6 @@ var staticRenderFns = [
             _vm._v("Home")
           ])
         ])
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("thead", [
-      _c("tr", [
-        _c("th", [_vm._v("Mes")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Smart")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Qty Smart")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Premium")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Qty Premium")])
       ])
     ])
   }

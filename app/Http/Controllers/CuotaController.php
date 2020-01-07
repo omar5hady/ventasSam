@@ -35,11 +35,19 @@ class CuotaController extends Controller
         else{
             if($month == ''){
                 if($user_id == ''){
-                    $cuotas = Cuota::where('month','=',$mes)
+                    $cuotas = Cuota::join('users','cuotas.user_id','=','users.id')
+                        ->select('cuotas.id','cuotas.premium','cuotas.smart','cuotas.premium_real',
+                            'cuotas.smart_real','cuotas.qty_premium','cuotas.qty_smart','cuotas.month',
+                            'cuotas.year','cuotas.qty_smart_real','qty_premium_real','users.usuario')
+                        ->where('month','=',$mes)
                         ->where('year','=',$anio)->paginate(8);
                 }
                 else{
-                    $cuotas = Cuota::where('month','=',$mes)
+                    $cuotas = Cuota::join('users','cuotas.user_id','=','users.id')
+                        ->select('cuotas.id','cuotas.premium','cuotas.smart','cuotas.premium_real',
+                            'cuotas.smart_real','cuotas.qty_premium','cuotas.qty_smart','cuotas.month',
+                            'cuotas.year','cuotas.qty_smart_real','qty_premium_real','users.usuario')
+                        ->where('month','=',$mes)
                         ->where('year','=',$anio)
                         ->where('user_id','=',$user_id)->paginate(8);
                 }
@@ -47,11 +55,19 @@ class CuotaController extends Controller
             }
             else{
                 if($user_id == ''){
-                    $cuotas = Cuota::where('month','=',$month)
+                    $cuotas = Cuota::join('users','cuotas.user_id','=','users.id')
+                        ->select('cuotas.id','cuotas.premium','cuotas.smart','cuotas.premium_real',
+                            'cuotas.smart_real','cuotas.qty_premium','cuotas.qty_smart','cuotas.month',
+                            'cuotas.year','cuotas.qty_smart_real','qty_premium_real','users.usuario')
+                        ->where('month','=',$month)
                         ->where('year','=',$anio)->paginate(8);
                 }
                 else{
-                    $cuotas = Cuota::where('month','=',$month)
+                    $cuotas = Cuota::join('users','cuotas.user_id','=','users.id')
+                        ->select('cuotas.id','cuotas.premium','cuotas.smart','cuotas.premium_real',
+                            'cuotas.smart_real','cuotas.qty_premium','cuotas.qty_smart','cuotas.month',
+                            'cuotas.year','cuotas.qty_smart_real','qty_premium_real','users.usuario')
+                        ->where('month','=',$month)
                         ->where('user_id','=',$user_id)
                         ->where('year','=',$anio)->paginate(8);
                 }
