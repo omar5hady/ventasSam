@@ -49,7 +49,7 @@
                         <a class="nav-link" href="#"><i class="fa fa-share-alt"></i> Basicos</a>
                     </li>
                     @endif
-                    <li class="nav-item">
+                    <li @click="menu=10" class="nav-item">
                         <a class="nav-link" href="#"><i class="fa fa-mixcloud"></i> Compartidos</a>
                     </li>
                 </ul>

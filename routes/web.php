@@ -90,6 +90,12 @@ Route::group(['middleware' => ['auth']],function(){
     //Dashboard
     Route::get('/dashboard/alcance','DashboardController@alcance');
     Route::get('/dashboard/ventaDia','DashboardController@ventaDia');
+
+    //Dropbox
+    Route::get('/file/index', 'FileController@index');
+    Route::post('/files/store', 'FileController@store');  
+    Route::delete('/files/delete', 'FileController@destroy'); 
+    Route::get('/files/{file}/download', 'FileController@download');
     
 });
 

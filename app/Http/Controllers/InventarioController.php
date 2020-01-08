@@ -143,27 +143,17 @@ class InventarioController extends Controller
 
     public function excelInventario( Request $request ){
 
-        $inventario = Inventario::join('detalle_inventarios as di','inventarios.id','=','di.inventario_id')
-                            ->join('equipos','di.equipo_id','=','equipos.id')
-                            ->join('sucursales','inventarios.sucursal_id','=','sucursales.id')
+        $inventarioGen = Inventario::join('sucursales','inventarios.sucursal_id','=','sucursales.id')
                         ->select('inventarios.total','inventarios.total_premium','inventarios.total_smart','inventarios.activo',
-                                'di.cantidad','equipos.modelo','equipos.tipo','sucursales.pv','sucursales.cadena'
+                                'sucursales.pv','sucursales.cadena'
                         )->where('inventarios.activo','=',1)
                         ->orderBy('inventarios.sucursal_id','asc')
                         ->get();
 
         
-        $detalleEquipos = [];
-
-            if(sizeof($inventario)){
-                foreach($inventario as $ep=>$det)
-                {
-                    $detalleEquipos[$ep] = $det->modelo;
-                }
-            }
 
 
 
-        return['inventario'=>$inventario,'equipos'=>$detalleEquipos];
+        return['inventario'=>$inventarioGen];
     }
 }

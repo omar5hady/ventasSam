@@ -38,6 +38,10 @@
     <template v-if="menu==9">
         <share-admin></share-admin>
     </template>
+
+    <template v-if="menu==10">
+        <dropbox-component rol-id="{{Auth::user()->rol_id}}"></dropbox-component>
+    </template>
 @endif
 
 
