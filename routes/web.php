@@ -82,6 +82,14 @@ Route::group(['middleware' => ['auth']],function(){
     Route::get('/share/ticketPromedioAdmn','ShareController@ticketPromedioAdmn');
     Route::get('/share/forecastAdmn','ShareController@forecastAdmn');
     Route::get('/share/wosDetalladoAdmn','ShareController@wosDetalladoAdmn');
+
+    //Excel
+    Route::get('/excel/ventas','VentaController@excelVentas');
+    Route::get('/excel/inventario','InventarioController@excelInventario');
+
+    //Dashboard
+    Route::get('/dashboard/alcance','DashboardController@alcance');
+    Route::get('/dashboard/ventaDia','DashboardController@ventaDia');
     
 });
 

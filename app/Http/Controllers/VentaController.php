@@ -11,6 +11,7 @@ use App\Detalle_inventario;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Auth;
+use Excel;
 
 class VentaController extends Controller
 {
@@ -189,5 +190,105 @@ class VentaController extends Controller
                 ->orderBy('equipos.modelo','asc')->get();
 
         return [ 'ventas'=> $ventas ];
+    }
+
+    public function excelVentas( Request $request ){
+
+        $fecha = Carbon::now();
+        $hoy =  $fecha->toDateString();
+        $buscar = $request->buscar;
+        $buscar2 = $request->buscar2;
+        $sucursal_id = $request->sucursal_id;
+
+        if(Auth::user()->rol_id == 1){
+            if($buscar == ''){
+                if($sucursal_id == ''){
+                    $ventas = Venta::join('sucursales','ventas.sucursal_id','=','sucursales.id')
+                    ->select('ventas.id','ventas.fecha','ventas.total','ventas.total_premium','ventas.total_smart',
+                            'sucursales.pv','sucursales.cadena','ventas.promocion')
+                    ->whereMonth('ventas.fecha',Carbon::now()->month)
+                    ->whereYear('ventas.fecha',Carbon::now()->year)
+                    ->orderBy('ventas.fecha','asc')->get();
+                }
+                else{
+                    $ventas = Venta::join('sucursales','ventas.sucursal_id','=','sucursales.id')
+                    ->select('ventas.id','ventas.fecha','ventas.total','ventas.total_premium','ventas.total_smart',
+                            'sucursales.pv','sucursales.cadena','ventas.promocion')
+                    ->whereMonth('ventas.fecha',Carbon::now()->month)
+                    ->whereYear('ventas.fecha',Carbon::now()->year)
+                    ->where('ventas.sucursal_id','=',$sucursal_id)
+                    ->orderBy('ventas.fecha','asc')->get();
+                }
+            }
+            else{
+                if($sucursal_id == ''){
+                    $ventas = Venta::join('sucursales','ventas.sucursal_id','=','sucursales.id')
+                    ->select('ventas.id','ventas.fecha','ventas.total','ventas.total_premium','ventas.total_smart',
+                            'sucursales.pv','sucursales.cadena','ventas.promocion')
+                    ->whereBetween('ventas.fecha', [$buscar, $buscar2])
+                    ->orderBy('ventas.fecha','asc')->get();
+                }
+                else{
+                    $ventas = Venta::join('sucursales','ventas.sucursal_id','=','sucursales.id')
+                    ->select('ventas.id','ventas.fecha','ventas.total','ventas.total_premium','ventas.total_smart',
+                            'sucursales.pv','sucursales.cadena','ventas.promocion')
+                    ->whereBetween('ventas.fecha', [$buscar, $buscar2])
+                    ->where('ventas.sucursal_id','=',$sucursal_id)
+                    ->orderBy('ventas.fecha','asc')->get();
+                }
+            }
+            
+        }
+
+        return Excel::create('Ventas', function($excel) use ($ventas){
+            $excel->sheet('ventas', function($sheet) use ($ventas){
+                
+                $sheet->row(1, [
+                    'Sucursal', 'Fecha','Total' ,'Total Premium','Total Smart'
+                ]);
+
+
+                $sheet->cells('A1:E1', function ($cells) {
+                    $cells->setBackground('#052154');
+                    $cells->setFontColor('#ffffff');
+                    // Set font family
+                    $cells->setFontFamily('Calibri');
+
+                    // Set font size
+                    $cells->setFontSize(13);
+
+                    // Set font weight to bold
+                    $cells->setFontWeight('bold');
+                    $cells->setAlignment('center');
+                });
+
+                $sheet->setColumnFormat(array(
+                    'C' => '$#,##0.00',
+                    'D' => '$#,##0.00',
+                    'E' => '$#,##0.00',
+                    'B' => 'yyyy-mm-dd',
+                ));
+
+                
+                $cont=1;
+
+                foreach($ventas as $index => $venta) {
+                    $sucursal = $venta->pv.' | '.$venta->cadena;
+
+                    $sheet->row($index+2, [
+                        $sucursal, 
+                        $venta->fecha, 
+                        $venta->total, 
+                        $venta->total_premium,
+                        $venta->total_smart,
+                    ]);	
+                }
+                $num='A1:E' . $cont;
+                $sheet->setBorder($num, 'thin');
+            });
+        }
+        
+        )->download('xlsx');
+
     }
 }

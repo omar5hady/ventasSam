@@ -27,6 +27,8 @@ Vue.component('inventario-component', require('./components/Inventario.vue').def
 Vue.component('share-component', require('./components/Shares.vue').default);
 Vue.component('share-admin', require('./components/BasicoAdmin.vue').default);
 
+Vue.component('dashboard-component', require('./components/Dashboard.vue').default);
+
 const app = new Vue({
     el: '#app',
     data:{

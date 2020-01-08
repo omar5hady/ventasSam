@@ -2,6 +2,9 @@
 @section('contenido')
 
 @if(Auth::check())
+    <template v-if="menu==0">
+        <dashboard-component></dashboard-component>
+    </template>
     <template v-if="menu==1">
         <equipo-component></equipo-component>
     </template>

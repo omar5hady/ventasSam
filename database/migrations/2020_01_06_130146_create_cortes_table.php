@@ -21,6 +21,7 @@ class CreateCortesTable extends Migration
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
             $table->double('total')->default(0);
+            $table->time('hora')->nullable();
         });
     }
 

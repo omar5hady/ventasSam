@@ -61,12 +61,14 @@ class InventarioController extends Controller
 
         return [ 
             
-            'inventarios'=> $inventarios , 'hoy'=>$hoy
+            'inventarios'=> $inventarios , 'hoy'=>$hoy,'hora'=>$fecha->toTimeString()
         ];
     }
 
     public function store(Request $request)
     {
+        $fecha = Carbon::now();
+        $hora =  $fecha->toTimeString();
         if( !$request->ajax() )return redirect('/');
         
         $user_id = Auth::user()->id;
@@ -90,6 +92,7 @@ class InventarioController extends Controller
             $inventario = new Inventario();
             $inventario->sucursal_id = $sucursal_id;
             $inventario->fecha = $request->fecha;
+            $inventario->hora = $hora;
             $inventario->vendedor = Auth::user()->usuario;
             $inventario->save();
  
@@ -136,5 +139,31 @@ class InventarioController extends Controller
                 ->orderBy('equipos.modelo','asc')->get();
 
         return [ 'ventas'=> $inventarios ];
+    }
+
+    public function excelInventario( Request $request ){
+
+        $inventario = Inventario::join('detalle_inventarios as di','inventarios.id','=','di.inventario_id')
+                            ->join('equipos','di.equipo_id','=','equipos.id')
+                            ->join('sucursales','inventarios.sucursal_id','=','sucursales.id')
+                        ->select('inventarios.total','inventarios.total_premium','inventarios.total_smart','inventarios.activo',
+                                'di.cantidad','equipos.modelo','equipos.tipo','sucursales.pv','sucursales.cadena'
+                        )->where('inventarios.activo','=',1)
+                        ->orderBy('inventarios.sucursal_id','asc')
+                        ->get();
+
+        
+        $detalleEquipos = [];
+
+            if(sizeof($inventario)){
+                foreach($inventario as $ep=>$det)
+                {
+                    $detalleEquipos[$ep] = $det->modelo;
+                }
+            }
+
+
+
+        return['inventario'=>$inventario,'equipos'=>$detalleEquipos];
     }
 }

@@ -7,6 +7,7 @@ use App\User;
 use App\Persona;
 use Auth;
 use Illuminate\Support\Facades\DB;
+use Excel;
 
 class UserController extends Controller
 {
@@ -156,6 +157,52 @@ class UserController extends Controller
             ->get();
 
         return ['personas'=>$personas];
+    }
+
+    public function excel(Request $request){
+
+        $personas = User::get();
+
+        return Excel::create('Asesores', function($excel) use ($personas){
+            $excel->sheet('asesores', function($sheet) use ($personas){
+                
+                $sheet->row(1, [
+                    'Usuario', 'Condicion','Rol' ,'Sucursal'
+                ]);
+
+
+                $sheet->cells('A1:D1', function ($cells) {
+                    $cells->setBackground('#052154');
+                    $cells->setFontColor('#ffffff');
+                    // Set font family
+                    $cells->setFontFamily('Calibri');
+
+                    // Set font size
+                    $cells->setFontSize(13);
+
+                    // Set font weight to bold
+                    $cells->setFontWeight('bold');
+                    $cells->setAlignment('center');
+                });
+
+                
+                $cont=1;
+
+                foreach($personas as $index => $persona) {
+
+                    $sheet->row($index+2, [
+                        $persona->usuario, 
+                        $persona->condicion, 
+                        $persona->rol_id, 
+                        $persona->sucursal_id,
+                    ]);	
+                }
+                $num='A1:F' . $cont;
+                $sheet->setBorder($num, 'thin');
+            });
+        }
+        
+        )->download('xlsx');
     }
 
 }

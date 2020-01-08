@@ -8,7 +8,7 @@ class Corte extends Model
 {
     protected $table = 'cortes'; // se referencia a que tabla pertenece el modelo
     protected $primaryKey = 'id'; //Referenciar la llave primaria
-    protected $fillable = ['sucursal_id','fecha','user_id','total'];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
+    protected $fillable = ['sucursal_id','fecha','user_id','total','hora'];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
 
     public $timestamps = false;
 

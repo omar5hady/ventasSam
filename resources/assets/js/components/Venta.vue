@@ -28,6 +28,7 @@
                                         <option v-for="sucursal in arraySucursales" :key="sucursal.id" :value="sucursal.id" v-text="sucursal.pv + ' | ' + sucursal.cadena "></option>
                                     </select>
                                     <button type="submit" @click="listarVentas(1,buscar)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <a v-if="rolId == 1" :href="'/excel/ventas?buscar=' + buscar + '&buscar2=' + buscar2 + '&sucursal_id=' + sucursal_id"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel</a>
                                 </div>
                             </div>
                         </div>

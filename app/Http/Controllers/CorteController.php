@@ -94,6 +94,9 @@ class CorteController extends Controller
 
     public function store(Request $request)
     {
+        $fecha = Carbon::now();
+        $hora =  $fecha->toTimeString();
+
         if( !$request->ajax() )return redirect('/');
         
         $user_id = Auth::user()->id;
@@ -110,6 +113,7 @@ class CorteController extends Controller
             $corte->sucursal_id = $sucursal_id;
             $corte->fecha = $request->fecha;
             $corte->user_id = $user_id;
+            $corte->hora = $hora;
             $corte->save();
  
             $equipos = $request->data;//Array de detalles

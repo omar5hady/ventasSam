@@ -24,6 +24,7 @@ class CreateInventariosTable extends Migration
             $table->integer('total_premium')->default(0);
             $table->integer('total_smart')->default(0);
             $table->boolean('activo')->default(1);
+            $table->time('hora')->nullable();
         });
     }
 
