@@ -64,7 +64,7 @@ class ShareController extends Controller
             }
         }
 
-        return['ventas'=>$ventas,'hoy'=>$fecha->day, 'diasMes'=>$fecha->daysInMonth,'ventas_30'=>$cant,'inventario'=>$inventario[0]->total];
+        return['ventas'=>$ventas,'hoy'=>$fecha->day, 'diasMes'=>$fecha->daysInMonth,'ventas_30'=>$total,'inventario'=>$inventario[0]->total];
     }
 
     public function wosDetallado(Request $request){
@@ -226,7 +226,7 @@ class ShareController extends Controller
                 'ventas'=>$ventas,
                 'hoy'=>$fecha->day, 
                 'diasMes'=>$fecha->daysInMonth,
-                'ventas_30'=>$cant,
+                'ventas_30'=>$total,
                 'inventario'=>$inventario
             ];
     }

@@ -26,6 +26,8 @@
                                 </div>
                                 <div class="input-group" v-if="rolId == 1">
                                     <button type="submit" @click="listarInventario(1,sucursal_id)" class="btn btn-primary"><i class="fa fa-refresh"></i> Actualizar</button>
+                                    <a v-if="rolId == 1" :href="'/excel/inventario?buscar=' + sucursal_id"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel</a>
+                                    <a v-if="rolId == 1" :href="'/excel/wos?buscar=' + sucursal_id"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel Wos</a>
                                 </div>
                             </div>
                         </div>

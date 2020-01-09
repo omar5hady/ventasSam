@@ -86,6 +86,7 @@ Route::group(['middleware' => ['auth']],function(){
     //Excel
     Route::get('/excel/ventas','VentaController@excelVentas');
     Route::get('/excel/inventario','InventarioController@excelInventario');
+    Route::get('/excel/wos','InventarioController@excelWos');
 
     //Dashboard
     Route::get('/dashboard/alcance','DashboardController@alcance');

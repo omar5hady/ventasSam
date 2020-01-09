@@ -11,6 +11,17 @@
                         <i class="fa fa-align-justify"></i> Dashboard
                     </div>
                     <div class="card-body">
+                        <div class="form-group row" v-if="rolId == 1">
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <select class="form-control" v-model="vendedor_id">
+                                        <option value="">Seleccione</option>
+                                        <option v-for="vendedor in arrayVendedores" :key="vendedor.id" :value="vendedor.id" v-text="vendedor.nombre + ' ' + vendedor.apellidos "></option>
+                                    </select>
+                                    <button type="submit" @click="getPeso(vendedor_id),ventaDia(vendedor_id)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="row">
                             
@@ -165,10 +176,15 @@
 
 <script>
     export default {
+        props:{
+            rolId:{type: String}
+        },
         data(){
             return{
                 arrayCuota:[],
+                arrayVendedores:[],
                 diaAct: 0,
+                vendedor_id:'',
                  ///Peso
                     pesoTotal:0,
                     pesoPremium:0,
@@ -205,10 +221,10 @@
                 let val = (value/1).toFixed(2)
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             },
-            getPeso(){
+            getPeso(vendedor_id){
                 let me = this;
                 me.arrayCuota=[];
-                var url = '/dashboard/alcance';
+                var url = '/dashboard/alcance?buscar='+vendedor_id;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayCuota = respuesta.cuota;
@@ -242,10 +258,23 @@
                     console.log(error);
                 });
             },
-
-            ventaDia(){
+            selectVendedor(){
                 let me = this;
-                var url = '/dashboard/ventaDia';
+                me.arrayVendedores=[];
+                var url = '/selectVendedor';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayVendedores = respuesta.personas;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+              
+            },
+
+            ventaDia(vendedor_id){
+                let me = this;
+                var url = '/dashboard/ventaDia?buscar='+vendedor_id;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
 
@@ -274,8 +303,9 @@
             
         },
         mounted() {
-            this.getPeso();
-            this.ventaDia();
+            this.getPeso(this.vendedor_id);
+            this.ventaDia(this.vendedor_id);
+            this.selectVendedor();
         }
     }
 </script>

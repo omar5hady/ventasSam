@@ -7,6 +7,7 @@ use App\Venta;
 use App\Desc_venta;
 use App\Cuota;
 use App\Inventario;
+use App\Equipo;
 use App\Detalle_inventario;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -240,15 +241,30 @@ class VentaController extends Controller
             
         }
 
-        return Excel::create('Ventas', function($excel) use ($ventas){
-            $excel->sheet('ventas', function($sheet) use ($ventas){
+        $equipos = Equipo::where('condicion','=',1)->orderBy('modelo','asc')->get();
+        $modelos=['Piso de venta','Fecha','Total','Total Premium','Total Smart'];
+        foreach($equipos as $eq=>$equipo){
+            
+            $modelos[] = $equipo->modelo;
+        }
+
+        if(sizeof($ventas)){
+            foreach($ventas as $ep=>$inv){
+                foreach($equipos as $eq=>$equipo){
+                    $modelo = $equipo->modelo;
+                    $inv->$modelo = Desc_venta::where('venta_id','=',$inv->id)->where('equipo_id','=',$equipo->id)->sum('cantidad');
+                }
+            }
+        }
+
+        //return['ventas'=>$ventas,'equipos'=>$equipos,'modelos'=>$modelos];
+        return Excel::create('Ventas', function($excel) use ($ventas, $equipos,$modelos){
+            $excel->sheet('ventas', function($sheet) use ($ventas, $equipos,$modelos){
                 
-                $sheet->row(1, [
-                    'Sucursal', 'Fecha','Total' ,'Total Premium','Total Smart'
-                ]);
+                $sheet->row(1, $modelos);
 
 
-                $sheet->cells('A1:E1', function ($cells) {
+                $sheet->cells('A1:AZ1', function ($cells) {
                     $cells->setBackground('#052154');
                     $cells->setFontColor('#ffffff');
                     // Set font family
@@ -270,20 +286,25 @@ class VentaController extends Controller
                 ));
 
                 
-                $cont=1;
+                $cont=sizeof($ventas)+1;;
 
-                foreach($ventas as $index => $venta) {
-                    $sucursal = $venta->pv.' | '.$venta->cadena;
+                foreach($ventas as $index => $inv) {
+                    $sucursal = $inv->pv.' | '.$inv->cadena;
+                    $fechaInv = $inv->fecha.' '.$inv->hora;
+                    $total=$inv->total;
+                    $total_premium=$inv->total_premium;
+                    $total_smart=$inv->total_smart;
+                    $arreglo=[$sucursal,$fechaInv,$total,$total_premium,$total_smart];
+                    foreach($equipos as $eq=>$equipo){
+                        $modelo = $equipo->modelo;
+                        $arreglo[]=$inv->$modelo;
+                    }
 
-                    $sheet->row($index+2, [
-                        $sucursal, 
-                        $venta->fecha, 
-                        $venta->total, 
-                        $venta->total_premium,
-                        $venta->total_smart,
-                    ]);	
+                    $sheet->row($index+3, 
+                        $arreglo
+                    );	
                 }
-                $num='A1:E' . $cont;
+                $num='A1:AZ' . $cont;
                 $sheet->setBorder($num, 'thin');
             });
         }

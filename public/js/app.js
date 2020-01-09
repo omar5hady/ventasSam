@@ -3278,11 +3278,29 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
+  props: {
+    rolId: {
+      type: String
+    }
+  },
   data: function data() {
     return {
       arrayCuota: [],
+      arrayVendedores: [],
       diaAct: 0,
+      vendedor_id: '',
       ///Peso
       pesoTotal: 0,
       pesoPremium: 0,
@@ -3316,10 +3334,10 @@ __webpack_require__.r(__webpack_exports__);
       var val = (value / 1).toFixed(2);
       return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     },
-    getPeso: function getPeso() {
+    getPeso: function getPeso(vendedor_id) {
       var me = this;
       me.arrayCuota = [];
-      var url = '/dashboard/alcance';
+      var url = '/dashboard/alcance?buscar=' + vendedor_id;
       axios.get(url).then(function (response) {
         var respuesta = response.data;
         me.arrayCuota = respuesta.cuota;
@@ -3343,9 +3361,20 @@ __webpack_require__.r(__webpack_exports__);
         console.log(error);
       });
     },
-    ventaDia: function ventaDia() {
+    selectVendedor: function selectVendedor() {
       var me = this;
-      var url = '/dashboard/ventaDia';
+      me.arrayVendedores = [];
+      var url = '/selectVendedor';
+      axios.get(url).then(function (response) {
+        var respuesta = response.data;
+        me.arrayVendedores = respuesta.personas;
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    ventaDia: function ventaDia(vendedor_id) {
+      var me = this;
+      var url = '/dashboard/ventaDia?buscar=' + vendedor_id;
       axios.get(url).then(function (response) {
         var respuesta = response.data;
         me.corte = respuesta.corte;
@@ -3367,8 +3396,9 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   mounted: function mounted() {
-    this.getPeso();
-    this.ventaDia();
+    this.getPeso(this.vendedor_id);
+    this.ventaDia(this.vendedor_id);
+    this.selectVendedor();
   }
 });
 
@@ -4029,6 +4059,8 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
 //
 //
 //
@@ -34954,6 +34986,80 @@ var render = function() {
         _vm._m(1),
         _vm._v(" "),
         _c("div", { staticClass: "card-body" }, [
+          _vm.rolId == 1
+            ? _c("div", { staticClass: "form-group row" }, [
+                _c("div", { staticClass: "col-md-4" }, [
+                  _c("div", { staticClass: "input-group" }, [
+                    _c(
+                      "select",
+                      {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.vendedor_id,
+                            expression: "vendedor_id"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        on: {
+                          change: function($event) {
+                            var $$selectedVal = Array.prototype.filter
+                              .call($event.target.options, function(o) {
+                                return o.selected
+                              })
+                              .map(function(o) {
+                                var val = "_value" in o ? o._value : o.value
+                                return val
+                              })
+                            _vm.vendedor_id = $event.target.multiple
+                              ? $$selectedVal
+                              : $$selectedVal[0]
+                          }
+                        }
+                      },
+                      [
+                        _c("option", { attrs: { value: "" } }, [
+                          _vm._v("Seleccione")
+                        ]),
+                        _vm._v(" "),
+                        _vm._l(_vm.arrayVendedores, function(vendedor) {
+                          return _c("option", {
+                            key: vendedor.id,
+                            domProps: {
+                              value: vendedor.id,
+                              textContent: _vm._s(
+                                vendedor.nombre + " " + vendedor.apellidos
+                              )
+                            }
+                          })
+                        })
+                      ],
+                      2
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-primary",
+                        attrs: { type: "submit" },
+                        on: {
+                          click: function($event) {
+                            _vm.getPeso(_vm.vendedor_id),
+                              _vm.ventaDia(_vm.vendedor_id)
+                          }
+                        }
+                      },
+                      [
+                        _c("i", { staticClass: "fa fa-search" }),
+                        _vm._v(" Buscar")
+                      ]
+                    )
+                  ])
+                ])
+              ])
+            : _vm._e(),
+          _vm._v(" "),
           _c("div", { staticClass: "row" }, [
             _c("div", { staticClass: "col-sm-12 col-lg-5" }, [
               _c("div", { staticClass: "card" }, [
@@ -36457,7 +36563,40 @@ var render = function() {
                         _c("i", { staticClass: "fa fa-refresh" }),
                         _vm._v(" Actualizar")
                       ]
-                    )
+                    ),
+                    _vm._v(" "),
+                    _vm.rolId == 1
+                      ? _c(
+                          "a",
+                          {
+                            staticClass: "btn btn-success",
+                            attrs: {
+                              href:
+                                "/excel/inventario?buscar=" + _vm.sucursal_id
+                            }
+                          },
+                          [
+                            _c("i", { staticClass: "fa fa-file-text" }),
+                            _vm._v(" Excel")
+                          ]
+                        )
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.rolId == 1
+                      ? _c(
+                          "a",
+                          {
+                            staticClass: "btn btn-success",
+                            attrs: {
+                              href: "/excel/wos?buscar=" + _vm.sucursal_id
+                            }
+                          },
+                          [
+                            _c("i", { staticClass: "fa fa-file-text" }),
+                            _vm._v(" Excel Wos")
+                          ]
+                        )
+                      : _vm._e()
                   ])
                 : _vm._e()
             ])

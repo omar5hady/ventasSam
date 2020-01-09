@@ -3,7 +3,7 @@
 
 @if(Auth::check())
     <template v-if="menu==0">
-        <dashboard-component></dashboard-component>
+        <dashboard-component rol-id="{{Auth::user()->rol_id}}"></dashboard-component>
     </template>
     <template v-if="menu==1">
         <equipo-component></equipo-component>
