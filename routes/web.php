@@ -52,6 +52,11 @@ Route::group(['middleware' => ['auth']],function(){
     Route::put('/user/activar','UserController@activar');
     Route::put('/user/desactivar','UserController@desactivar');
 
+    //Avisos
+    Route::post('/aviso/store','AvisoController@store');
+    Route::get('/aviso/get','AvisoController@getNoVistos');
+    Route::put('/aviso/ocultar','AvisoController@ocultar');
+
     //// ventas
     Route::get('/ventas','VentaController@index');
     Route::get('/ventas/indexDetalle','VentaController@indexDetalle');

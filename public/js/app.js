@@ -3289,6 +3289,25 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     rolId: {
@@ -3299,6 +3318,7 @@ __webpack_require__.r(__webpack_exports__);
     return {
       arrayCuota: [],
       arrayVendedores: [],
+      arrayAvisos: [],
       diaAct: 0,
       vendedor_id: '',
       ///Peso
@@ -3372,6 +3392,30 @@ __webpack_require__.r(__webpack_exports__);
         console.log(error);
       });
     },
+    getAviso: function getAviso() {
+      var me = this;
+      me.arrayAvisos = [];
+      var url = '/aviso/get';
+      axios.get(url).then(function (response) {
+        var respuesta = response.data;
+        me.arrayAvisos = respuesta.avisos;
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    ocultarAviso: function ocultarAviso(id) {
+      this.id = id;
+      var me = this; //Con axios se llama el metodo store de PersonalController
+
+      axios.put('/aviso/ocultar', {
+        'id': id
+      }).then(function (response) {
+        me.getAviso(); //se enlistan nuevamente los registros
+        //Se muestra mensaje Success
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
     ventaDia: function ventaDia(vendedor_id) {
       var me = this;
       var url = '/dashboard/ventaDia?buscar=' + vendedor_id;
@@ -3399,6 +3443,7 @@ __webpack_require__.r(__webpack_exports__);
     this.getPeso(this.vendedor_id);
     this.ventaDia(this.vendedor_id);
     this.selectVendedor();
+    this.getAviso();
   }
 });
 
@@ -5474,6 +5519,43 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -5491,6 +5573,8 @@ __webpack_require__.r(__webpack_exports__);
       arrayPersonal: [],
       arraySucursales: [],
       modal: 0,
+      modal2: 0,
+      aviso: '',
       tituloModal: '',
       tipoAccion: 0,
       errorPersonal: 0,
@@ -5549,6 +5633,7 @@ __webpack_require__.r(__webpack_exports__);
         var respuesta = response.data;
         me.arrayPersonal = respuesta.personas.data;
         me.pagination = respuesta.pagination;
+        me.cerrarModal();
       })["catch"](function (error) {
         console.log(error);
       });
@@ -5605,6 +5690,30 @@ __webpack_require__.r(__webpack_exports__);
           position: 'top-end',
           type: 'success',
           title: 'Usuario agregado correctamente',
+          showConfirmButton: false,
+          timer: 1500
+        });
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    enviarAviso: function enviarAviso() {
+      var me = this; //Con axios se llama el metodo store de PersonalController
+
+      axios.post('/aviso/store', {
+        'id': this.id,
+        'aviso': this.aviso
+      }).then(function (response) {
+        me.proceso = false;
+        me.cerrarModal(); //al guardar el registro se cierra el modal
+
+        me.listarPersonal(1, '', 'personas.nombre'); //se enlistan nuevamente los registros
+        //Se muestra mensaje Success
+
+        swal({
+          position: 'top-end',
+          type: 'success',
+          title: 'Aviso enviado correctamente',
           showConfirmButton: false,
           timer: 1500
         });
@@ -5732,6 +5841,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     cerrarModal: function cerrarModal() {
       this.modal = 0;
+      this.modal2 = 0;
       this.nombre = '';
       this.apellidos = '';
       this.celular = '';
@@ -5810,6 +5920,15 @@ __webpack_require__.r(__webpack_exports__);
                   this.tipoAccion = 2;
                   this.inmobiliaria = '';
                   this.tipo_vendedor = 0;
+                  break;
+                }
+
+              case 'aviso':
+                {
+                  //console.log(data);
+                  this.modal2 = 1;
+                  this.id = data['id'];
+                  this.aviso = '';
                   break;
                 }
             }
@@ -35060,6 +35179,46 @@ var render = function() {
               ])
             : _vm._e(),
           _vm._v(" "),
+          _vm.arrayAvisos
+            ? _c(
+                "div",
+                { staticClass: "form-group row" },
+                _vm._l(_vm.arrayAvisos, function(aviso) {
+                  return _c("div", { key: aviso.id, staticClass: "col-md-4" }, [
+                    _c("div", { staticClass: "card text-white bg-primary" }, [
+                      _c("div", { staticClass: "card-body" }, [
+                        _c("div", { staticClass: "text-value" }, [
+                          _vm._v("Aviso")
+                        ]),
+                        _vm._v(" "),
+                        _c("div", [_vm._v(_vm._s(aviso.aviso))]),
+                        _vm._v(" "),
+                        _vm._m(2, true),
+                        _vm._v(" "),
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-light",
+                            on: {
+                              click: function($event) {
+                                return _vm.ocultarAviso(aviso.id)
+                              }
+                            }
+                          },
+                          [_vm._v("Aceptar")]
+                        ),
+                        _vm._v(" "),
+                        _c("small", { staticClass: "text-muted text-right" }, [
+                          _vm._v(_vm._s(aviso.created_at))
+                        ])
+                      ])
+                    ])
+                  ])
+                }),
+                0
+              )
+            : _vm._e(),
+          _vm._v(" "),
           _c("div", { staticClass: "row" }, [
             _c("div", { staticClass: "col-sm-12 col-lg-5" }, [
               _c("div", { staticClass: "card" }, [
@@ -35082,7 +35241,7 @@ var render = function() {
                               "table table-bordered table-striped table-sm"
                           },
                           [
-                            _vm._m(2),
+                            _vm._m(3),
                             _vm._v(" "),
                             _c("tbody", [
                               _c("tr", [
@@ -35107,7 +35266,7 @@ var render = function() {
                               ]),
                               _vm._v(" "),
                               _c("tr", [
-                                _vm._m(3),
+                                _vm._m(4),
                                 _vm._v(" "),
                                 _c("td", [
                                   _vm._v(
@@ -35243,7 +35402,7 @@ var render = function() {
                             ]
                           ),
                           _vm._v(" "),
-                          _vm._m(4),
+                          _vm._m(5),
                           _vm._v(" "),
                           _c("div", [
                             _c(
@@ -35279,7 +35438,7 @@ var render = function() {
                   { staticClass: "card-body p-4 d-flex align-items-center" },
                   [
                     _c("div", [
-                      _vm._m(5),
+                      _vm._m(6),
                       _vm._v(" "),
                       _c("div", { staticClass: "text-value-sm" }, [
                         _c("div", [
@@ -35367,7 +35526,7 @@ var render = function() {
                             )
                           ]),
                           _vm._v(" "),
-                          _vm._m(6),
+                          _vm._m(7),
                           _vm._v(" "),
                           _c("div", [
                             _c(
@@ -35439,7 +35598,7 @@ var render = function() {
                           ]),
                           _vm._v(" "),
                           _c("div", { staticClass: "row" }, [
-                            _vm._m(7),
+                            _vm._m(8),
                             _vm._v(" "),
                             _c("div", [
                               _c(
@@ -35493,6 +35652,27 @@ var staticRenderFns = [
       _c("i", { staticClass: "fa fa-align-justify" }),
       _vm._v(" Dashboard\n                ")
     ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      { staticClass: "progress progress-white progress-xs my-2" },
+      [
+        _c("div", {
+          staticClass: "progress-bar",
+          staticStyle: { width: "25%" },
+          attrs: {
+            role: "progressbar",
+            "aria-valuenow": "25",
+            "aria-valuemin": "0",
+            "aria-valuemax": "100"
+          }
+        })
+      ]
+    )
   },
   function() {
     var _vm = this
@@ -38847,6 +39027,26 @@ var render = function() {
                               _vm._v("Inactivo")
                             ])
                           : _vm._e()
+                      ]),
+                      _vm._v(" "),
+                      _c("td", [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-primary btn-sm",
+                            attrs: { type: "button", title: "Enviar aviso" },
+                            on: {
+                              click: function($event) {
+                                return _vm.abrirModal(
+                                  "Personal",
+                                  "aviso",
+                                  Personal
+                                )
+                              }
+                            }
+                          },
+                          [_c("i", { staticClass: "fa fa-comment-o" })]
+                        )
                       ])
                     ])
                   }),
@@ -39390,6 +39590,124 @@ var render = function() {
           ]
         )
       ]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal animated fadeIn",
+        class: { mostrar: _vm.modal2 },
+        staticStyle: { display: "none" },
+        attrs: {
+          tabindex: "-1",
+          role: "dialog",
+          "aria-labelledby": "myModalLabel",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass: "modal-dialog modal-primary modal-lg",
+            attrs: { role: "document" }
+          },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _c("div", { staticClass: "modal-header" }, [
+                _c("h4", {
+                  staticClass: "modal-title",
+                  domProps: { textContent: _vm._s("Aviso") }
+                }),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "close",
+                    attrs: { type: "button", "aria-label": "Close" },
+                    on: {
+                      click: function($event) {
+                        return _vm.cerrarModal()
+                      }
+                    }
+                  },
+                  [
+                    _c("span", { attrs: { "aria-hidden": "true" } }, [
+                      _vm._v("×")
+                    ])
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-body" }, [
+                _c("div", { staticClass: "form-group row" }, [
+                  _c(
+                    "label",
+                    {
+                      staticClass: "col-md-3 form-control-label",
+                      attrs: { for: "text-input" }
+                    },
+                    [_vm._v("Comentario")]
+                  ),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-md-9" }, [
+                    _c("textarea", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.aviso,
+                          expression: "aviso"
+                        }
+                      ],
+                      attrs: { id: "", cols: "50", rows: "5" },
+                      domProps: { value: _vm.aviso },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.aviso = $event.target.value
+                        }
+                      }
+                    })
+                  ])
+                ])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-footer" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-secondary",
+                    attrs: { type: "button" },
+                    on: {
+                      click: function($event) {
+                        return _vm.cerrarModal()
+                      }
+                    }
+                  },
+                  [_vm._v("Cerrar")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary",
+                    attrs: { type: "button" },
+                    on: {
+                      click: function($event) {
+                        return _vm.enviarAviso()
+                      }
+                    }
+                  },
+                  [_vm._v("Enviar")]
+                )
+              ])
+            ])
+          ]
+        )
+      ]
     )
   ])
 }
@@ -39424,7 +39742,9 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Rol")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Status")])
+        _c("th", [_vm._v("Status")]),
+        _vm._v(" "),
+        _c("th")
       ])
     ])
   }

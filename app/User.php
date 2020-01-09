@@ -52,4 +52,8 @@ class User extends Authenticatable
     public function cuota(){
         return $this->hasMany('App\Venta');
     }
+
+    public function aviso(){
+        return $this->hasMany('App\Aviso');
+    }
 }

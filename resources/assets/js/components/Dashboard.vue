@@ -23,6 +23,25 @@
                             </div>
                         </div>
 
+                        <div class="form-group row" v-if="arrayAvisos">
+                            <div class="col-md-4" v-for="aviso in arrayAvisos" :key="aviso.id">
+                                
+                                <div class="card text-white bg-primary">
+                                    <div class="card-body">
+                                        <div class="text-value">Aviso</div>
+                                        <div>{{aviso.aviso}}</div>
+                                        <div class="progress progress-white progress-xs my-2">
+                                            <div class="progress-bar" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                        <button class="btn btn-light" @click="ocultarAviso(aviso.id)">Aceptar</button>
+                                        <small class="text-muted text-right">{{aviso.created_at}}</small>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+
                         <div class="row">
                             
                             <!-- Alcance al Dia -->
@@ -183,6 +202,7 @@
             return{
                 arrayCuota:[],
                 arrayVendedores:[],
+                arrayAvisos:[],
                 diaAct: 0,
                 vendedor_id:'',
                  ///Peso
@@ -271,6 +291,34 @@
                 });
               
             },
+            getAviso(){
+                let me = this;
+                me.arrayAvisos=[];
+                var url = '/aviso/get';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayAvisos = respuesta.avisos;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+              
+            },
+
+            ocultarAviso(id){
+                this.id=id;
+                
+                let me = this;
+                //Con axios se llama el metodo store de PersonalController
+                axios.put('/aviso/ocultar',{
+                    'id': id,
+                }).then(function (response){
+                    me.getAviso(); //se enlistan nuevamente los registros
+                    //Se muestra mensaje Success
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
 
             ventaDia(vendedor_id){
                 let me = this;
@@ -306,6 +354,7 @@
             this.getPeso(this.vendedor_id);
             this.ventaDia(this.vendedor_id);
             this.selectVendedor();
+            this.getAviso();
         }
     }
 </script>

@@ -41,6 +41,7 @@
                                         <th>Pv</th>
                                         <th>Rol</th>
                                         <th>Status</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -69,6 +70,11 @@
                                         <td>
                                             <span v-if = "Personal.condicion==1" class="badge badge-success">Activo</span>
                                             <span v-if = "Personal.condicion==0" class="badge badge-danger">Inactivo</span>
+                                        </td>
+                                        <td>
+                                            <button type="button" title="Enviar aviso" @click="abrirModal('Personal','aviso',Personal)" class="btn btn-primary btn-sm">
+                                                <i class="fa fa-comment-o"></i>
+                                            </button>
                                         </td>
                                                         
                                     
@@ -188,6 +194,37 @@
             </div>
             <!--Fin del modal-->
 
+            <!--Inicio del modal agregar/actualizar-->
+            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="'Aviso'"></h4>
+                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">Comentario</label>
+                                <div class="col-md-9">
+                                    <textarea v-model="aviso" id="" cols="50" rows="5"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
+                            <button type="button" class="btn btn-primary" @click="enviarAviso()">Enviar</button>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!--Fin del modal-->
+
         </main>
 </template>
 
@@ -213,6 +250,8 @@
                 arrayPersonal:[],
                 arraySucursales:[],
                 modal : 0,
+                modal2 : 0,
+                aviso : '',
                 tituloModal : '',
                 tipoAccion: 0,
                 errorPersonal : 0,
@@ -268,6 +307,7 @@
                     var respuesta = response.data;
                     me.arrayPersonal = respuesta.personas.data;
                     me.pagination = respuesta.pagination;
+                    me.cerrarModal();
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -331,6 +371,29 @@
                         position: 'top-end',
                         type: 'success',
                         title: 'Usuario agregado correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+            enviarAviso(){
+                let me = this;
+                //Con axios se llama el metodo store de PersonalController
+                axios.post('/aviso/store',{
+                    'id': this.id,
+                    'aviso': this.aviso,
+                    
+                }).then(function (response){
+                    me.proceso=false;
+                    me.cerrarModal(); //al guardar el registro se cierra el modal
+                    me.listarPersonal(1,'','personas.nombre'); //se enlistan nuevamente los registros
+                    //Se muestra mensaje Success
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Aviso enviado correctamente',
                         showConfirmButton: false,
                         timer: 1500
                         })
@@ -490,6 +553,7 @@
            
             cerrarModal(){
                 this.modal = 0;
+                this.modal2 = 0;
                 this.nombre='';
                 this.apellidos='';
                
@@ -572,6 +636,14 @@
                                 this.tipoAccion = 2;
                                 this.inmobiliaria='';
                                 this.tipo_vendedor=0;
+                                break;
+                            }
+                            case 'aviso':
+                            {
+                                //console.log(data);
+                                this.modal2 =1;
+                                this.id=data['id'];
+                                this.aviso='';
                                 break;
                             }
                            
