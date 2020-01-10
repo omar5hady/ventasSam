@@ -259,7 +259,7 @@ class InventarioController extends Controller
             });
         }
         
-        )->download('xls');
+        )->download('xlsx');
     }
 
     public function excelWos(Request $request){
@@ -400,6 +400,6 @@ class InventarioController extends Controller
             });
         }
         
-        )->download('xls');
+        )->download('xlsx');
     }
 }
