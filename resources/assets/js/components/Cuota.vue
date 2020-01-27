@@ -48,6 +48,7 @@
                             <table class="table table-bordered table-striped table-sm">
                                 <thead>
                                     <tr>
+                                        <th v-if="rolId==1"></th>
                                         <th>Mes</th>
                                         <th>Smart</th>
                                         <th>Qty Smart</th>
@@ -58,6 +59,11 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="cuota in arrayCuota" :key="cuota.id">
+                                        <td v-if="rolId == 1">
+                                            <button type="button" @click="abrirModal('actualizar',cuota)" class="btn btn-warning btn-sm">
+                                                <i class="icon-pencil"></i>
+                                            </button>
+                                        </td>
                                         <template>
                                             <td v-if="cuota.month == 1">Enero</td>
                                             <td v-if="cuota.month == 2">Febrero</td>
@@ -115,11 +121,24 @@
                         </div>
                         <div class="modal-body">
                             <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+                                <div class="form-group row" v-if="tipoAccion == 1 && rolId == 1">
+                                    <label class="col-md-3 form-control-label" for="text-input">Usuario</label>
+                                    <!--Criterios para el listado de busqueda -->
+                                    <div class="col-md-6">
+                                        <select class="form-control" v-model="vendedor_id"  v-if="rolId == 1">
+                                            <option value="">Seleccione</option>
+                                            <option v-for="vendedor in arrayVendedores" :key="vendedor.id" :value="vendedor.id" v-text="vendedor.nombre + ' ' + vendedor.apellidos "></option>
+                                        </select>
+                                    </div>
+                                </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Cuota premium</label>
                                     <!--Criterios para el listado de busqueda -->
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <input type="text" v-model="premium" class="form-control" placeholder="Cuota premium">
+                                    </div>
+                                    <div class="col-md-4">
+                                        ${{formatNumber(premium)}}
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -132,8 +151,11 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Cuota smart</label>
                                     <!--Criterios para el listado de busqueda -->
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <input type="text" v-model="smart" class="form-control" placeholder="Cuota smart">
+                                    </div>
+                                    <div class="col-md-4">
+                                        ${{formatNumber(smart)}}
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -159,6 +181,7 @@
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
                             <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
                             <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarCuota()">Guardar</button>
+                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="updateCuota()">Guardar cambios</button>
                         </div>
                     </div>
                     <!-- /.modal-content -->
@@ -300,6 +323,7 @@
                     'smart': this.smart,
                     'qty_premium' :  this.qty_premium,
                     'qty_smart' :  this.qty_smart,
+                    'vendedor_id' : this.vendedor_id,
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal
@@ -309,6 +333,35 @@
                         position: 'top-end',
                         type: 'success',
                         title: 'Cuota agregada correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+            updateCuota(){
+                if(this.validarCuota()) //Se verifica si hay un error (campo vacio)
+                {
+                    return;
+                }
+                let me = this;
+                //Con axios se llama el metodo store de FraccionaminetoController
+                axios.put('/cuota/update',{
+                    'premium': this.premium,
+                    'smart': this.smart,
+                    'qty_premium' :  this.qty_premium,
+                    'qty_smart' :  this.qty_smart,
+                    'id' : this.id,
+                    
+                }).then(function (response){
+                    me.cerrarModal(); //al guardar el registro se cierra el modal
+                    me.listarCuota(1,''); //se enlistan nuevamente los registros
+                    //Se muestra mensaje Success
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Cuota actualizada correctamente',
                         showConfirmButton: false,
                         timer: 1500
                         })
@@ -361,6 +414,19 @@
                         this.qty_smart = 0;
                         this.tipoAccion = 1;
                         this.tipo = 0;
+                        this.vendedor_id = '';
+                        break;
+                    }
+                    case 'actualizar':{
+                        this.modal = 1;
+                        this.tituloModal = 'Actualizar Cuota';
+                        this.premium =data['premium'];
+                        this.qty_premium = data['qty_premium'];
+                        this.smart = data['smart'];
+                        this.qty_smart = data['qty_smart'];
+                        this.tipoAccion = 2;
+                        this.tipo = 0;
+                        this.id = data['id'];
                         break;
                     }
                 }

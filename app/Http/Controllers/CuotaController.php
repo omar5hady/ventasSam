@@ -40,7 +40,8 @@ class CuotaController extends Controller
                             'cuotas.smart_real','cuotas.qty_premium','cuotas.qty_smart','cuotas.month',
                             'cuotas.year','cuotas.qty_smart_real','qty_premium_real','users.usuario')
                         ->where('month','=',$mes)
-                        ->where('year','=',$anio)->paginate(8);
+                        ->where('year','=',$anio)
+                        ->where('users.condicion','=',1)->paginate(8);
                 }
                 else{
                     $cuotas = Cuota::join('users','cuotas.user_id','=','users.id')
@@ -60,7 +61,8 @@ class CuotaController extends Controller
                             'cuotas.smart_real','cuotas.qty_premium','cuotas.qty_smart','cuotas.month',
                             'cuotas.year','cuotas.qty_smart_real','qty_premium_real','users.usuario')
                         ->where('month','=',$month)
-                        ->where('year','=',$anio)->paginate(8);
+                        ->where('year','=',$anio)
+                        ->where('users.condicion','=',1)->paginate(8);
                 }
                 else{
                     $cuotas = Cuota::join('users','cuotas.user_id','=','users.id')
@@ -89,14 +91,29 @@ class CuotaController extends Controller
     }
 
     public function store(Request $request){
+        if($request->vendedor_id == ''){
+            $user = Auth::user()->id;
+        }
+        else{
+            $user = $request->vendedor_id;
+        }
         $cuota = new Cuota();
-        $cuota->user_id = Auth::user()->id;
+        $cuota->user_id = $user;
         $cuota->premium = $request->premium;
         $cuota->smart = $request->smart;
         $cuota->qty_premium = $request->qty_premium;
         $cuota->qty_smart = $request->qty_smart;
         $cuota->month = Carbon::now()->month;
         $cuota->year = Carbon::now()->year;
+        $cuota->save();
+    }
+
+    public function update(Request $request){
+        $cuota = Cuota::findOrFail($request->id);
+        $cuota->premium = $request->premium;
+        $cuota->smart = $request->smart;
+        $cuota->qty_premium = $request->qty_premium;
+        $cuota->qty_smart = $request->qty_smart;
         $cuota->save();
     }
 }

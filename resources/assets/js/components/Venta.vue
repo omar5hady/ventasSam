@@ -50,6 +50,9 @@
                                             <button type="button" @click="abrirModal('ver',venta)" class="btn btn-primary btn-sm">
                                                 <i class="icon-eye"></i>
                                             </button>
+                                            <button v-if="rolId == 1" type="button" @click="abrirModal('update',venta)" class="btn btn-danger btn-sm">
+                                                <i class="icon-pencil"></i>
+                                            </button>
                                         </td>
                                         <td v-text="venta.pv + ' | '+venta.cadena"></td>
                                         <td v-text="venta.fecha"></td>
@@ -78,7 +81,7 @@
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
-            <!--Inicio del modal agregar/actualizar-->
+            <!--Inicio del modal agregar-->
             <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
                 <div class="modal-dialog modal-primary modal-lg" role="document">
                     <div class="modal-content">
@@ -90,6 +93,22 @@
                         </div>
                         <div class="modal-body">
                             <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+                                <div class="form-group row" v-if="rolId == 1">
+                                    <label class="col-md-2 form-control-label" for="text-input">Sucursal</label>
+                                    <!--Criterios para el listado de busqueda -->
+                                    <div class="col-md-4">
+                                        <select class="form-control" v-model="sucursal_id" @click="selectVendedor(sucursal_id)" v-if="rolId == 1">
+                                            <option value="">Seleccione</option>
+                                            <option v-for="sucursal in arraySucursales" :key="sucursal.id" :value="sucursal.id" v-text="sucursal.pv + ' | ' + sucursal.cadena "></option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <select class="form-control" v-model="vendedor_id" v-if="rolId == 1">
+                                            <option value="">Seleccione</option>
+                                            <option v-for="vendedor in arrayVendedores" :key="vendedor.id" :value="vendedor.id" v-text="vendedor.nombre + ' ' + vendedor.apellidos "></option>
+                                        </select>
+                                    </div>
+                                </div>
                                 <div class="form-group row">
                                     <label class="col-md-2 form-control-label" for="text-input">Fecha</label>
                                     <!--Criterios para el listado de busqueda -->
@@ -136,7 +155,7 @@
             </div>
             <!--Fin del modal-->
 
-            <!--Inicio del modal agregar/actualizar-->
+            <!--Detalle-->
             <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
                 <div class="modal-dialog modal-primary modal-lg" role="document">
                     <div class="modal-content">
@@ -222,6 +241,97 @@
                 <!-- /.modal-dialog -->
             </div>
             <!--Fin del modal-->
+
+            <!--Actualizar-->
+            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal3}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="tituloModal"></h4>
+                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+                                <div class="form-group row">
+                                    <label class="col-md-2 form-control-label" for="text-input">Fecha</label>
+                                    <!--Criterios para el listado de busqueda -->
+                                    <div class="col-md-6">
+                                        <input readonly type="date" v-model="fecha" class="form-control" placeholder="Fecha de reporte">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-2 form-control-label" for="text-input">Promoción</label>
+                                    <div class="col-md-7">
+                                        <textarea rows="3" readonly cols="30" v-model="promocion" class="form-control" placeholder="¿Qué promoción es la que más te esta pegando y que vigencia tiene?"></textarea>
+                                    </div>
+                                </div>
+
+                                 <div class="form-group row">
+                                    <label class="col-md-2 form-control-label" for="text-input">Descripción</label>
+                                    <div class="col-md-8">
+                                        <table class="table table-bordered table-striped table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>Modelo</th>
+                                                    <th>Categoria</th>
+                                                    <th>Cantidad</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="venta in arrayDetalle" :key="venta.id">
+                                                    <td>
+                                                        <button title="Eliminar" type="button" class="btn btn-danger btn-sm" @click="eliminarDetalle(venta)">
+                                                            <i class="icon-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                    <td v-text="venta.modelo"></td>
+                                                    <td>
+                                                        <span v-if="venta.tipo == 0" class="badge2 badge-success"> Smart </span>
+                                                        <span v-else class="badge2 badge-dark"> Premium </span>
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" pattern="\d*" :id="venta.id" v-model="venta.cantidad" v-on:keypress="isNumber($event)" class="form-control" >
+                                                    </td>
+                                                </tr>                               
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-2 form-control-label" for="text-input">Otro modelo</label>
+                                    <div class="col-md-4">
+                                        <select class="form-control" v-model="equipo_id">
+                                            <option value="">Seleccione</option>
+                                            <option v-for="equipo in arrayEquipos" :key="equipo.id" :value="equipo.id" v-text="equipo.modelo"></option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                         <input type="text" pattern="\d*" v-on:keypress="isNumber($event)" v-model="cantidad" class="form-control" placeholder="Cantidad">
+                                    </div>
+                                    <div class="col-md-3">
+                                         <button title="Añadir" type="button" class="btn btn-primary btn-sm" @click="addDetalle()">
+                                            <i class="icon-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                            </form>
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                            <button type="button" class="btn btn-success" @click="updateVenta()">Guardar</button>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!--Fin del modal-->
         </main>
 </template>
 
@@ -241,18 +351,24 @@
                 fecha:'',
                 promocion:'',
                 total:0,
+                user_id:0,
+                cantidad : 0,
+                equipo_id : '',
                 total_premium: 0,
                 total_smart : 0,
                 arrayVentas  : [],
                 arrayEquipos : [],
                 arrayDetalle : [],
                 arraySucursales : [],
+                arrayVendedores:[],
                 modal : 0,
                 modal2 : 0,
+                modal3 : 0,
                 tituloModal : '',
                 tipoAccion: 0,
                 errorVenta : 0,
                 sucursal_id: '',
+                vendedor_id: '',
                 errorMostrarMsjVenta : [],
                 pagination : {
                     'total' : 0,         
@@ -331,6 +447,19 @@
                 });
               
             },
+            selectVendedor(id){
+                let me = this;
+                me.arrayVendedores=[];
+                var url = '/selectVendedorSucursal?sucursal_id=' + id;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayVendedores = respuesta.personas;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+              
+            },
             /**Metodo para registrar  */
             registrarVenta(){
                 if(this.validarVenta()) //Se verifica si hay un error (campo vacio)
@@ -342,10 +471,101 @@
                 axios.post('/ventas/registrar',{
                     'fecha': this.fecha,
                     'promocion': this.promocion,
+                    'sucursal' : this.sucursal_id,
+                    'user_id' : this.vendedor_id,
                     'data':this.arrayEquipos,
                 }).then(function (response){
                     me.listarVentas(1,''); //se enlistan nuevamente los registros
                     me.cerrarModal();
+                    //Se muestra mensaje Success
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Ventas agregadas correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+            updateVenta(){
+                if(this.validarVenta()) //Se verifica si hay un error (campo vacio)
+                {
+                    return;
+                }
+                let me = this;
+                //Con axios se llama el metodo store de FraccionaminetoController
+                axios.put('/ventas/update',{
+                    'fecha': this.fecha,
+                    'promocion': this.promocion,
+                    'data':this.arrayDetalle,
+                    'user_id': this.user_id, 
+                    'sucursal_id': this.sucursal_id,
+                    'id' : this.id,
+                    
+                }).then(function (response){
+                    me.listarVentas(1,''); //se enlistan nuevamente los registros
+                    me.cerrarModal();
+                    //Se muestra mensaje Success
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Venta actualizada correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+            eliminarDetalle(data =[]){
+                swal({
+                title: '¿Desea eliminar?',
+                text: "Esta acción no se puede revertir!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Si, eliminar!'
+                }).then((result) => {
+                if (result.value) {
+                    let me = this;
+
+                axios.delete('/venta/detalleEliminar', 
+                        {params: 
+                            {
+                                'id': data['id'],
+                                'user_id' : this.user_id,
+                                'sucursal_id' : this.sucursal_id,
+                                'fecha' : this.fecha,
+                            }
+                        }).then(function (response){
+                        swal(
+                        'Borrado!',
+                        'Detalle borrado correctamente.',
+                        'success'
+                        )
+                        me.indexDetalle(me.id);
+                    }).catch(function (error){
+                        console.log(error);
+                    });
+                }
+                })
+            },
+            addDetalle(){
+                let me = this;
+                //Con axios se llama el metodo store de FraccionaminetoController
+                axios.post('/ventas/addDetalle',{
+                    'id': this.id,
+                    'fecha' : this.fecha,
+                    'equipo_id': this.equipo_id,
+                    'cantidad':this.cantidad,
+                    'user_id': this.user_id, 
+                    'sucursal_id': this.sucursal_id,
+                }).then(function (response){
+                    me.indexDetalle(me.id); //se enlistan nuevamente los registros
                     //Se muestra mensaje Success
                     swal({
                         position: 'top-end',
@@ -420,6 +640,7 @@
             cerrarModal(){
                 this.modal = 0;
                 this.modal2 = 0;
+                this.modal3 = 0;
                 this.tituloModal = '';
                 this.promocion = '';
                 this.id = '';
@@ -439,6 +660,8 @@
                         this.tituloModal = 'Registrar Ventas';
                         this.prmocion = '';
                         this.tipoAccion = 1;
+                        this.sucursal_id = '';
+                        this.user_id = '';
                         this.tipo = 0;
                         break;
                     }
@@ -451,6 +674,19 @@
                         this.total = data['total'];
                         this.total_premium = data['total_premium'];
                         this.total_smart = data['total_smart'];
+                        break;
+                    }
+
+                    case 'update':{
+                        this.indexDetalle(data['id']);
+                        this.id = data['id'];
+                        this.sucursal_id = data['sucursal_id'];
+                        this.modal3 = 1;
+                        this.tituloModal = 'Ventas en ' + data['pv'] + ' | ' +data['cadena'];
+                        this.fecha = data['fecha'];
+                        this.promocion = data['promocion'];
+                        this.user_id = data['user_id'];
+                        this.getEquipos();
                         break;
                     }
                 }

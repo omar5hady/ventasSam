@@ -154,8 +154,12 @@ class ShareController extends Controller
             
         }
         else{
-            $ventas = Venta::where('fecha','=',$hoy)->get();
-            $ventas[0]->total = Venta::where('fecha','=',$hoy)->sum('total');
+            $ventas = Venta::join('sucursales','ventas.sucursal_id','=','sucursales.id')
+                ->where('ventas.fecha','=',$hoy)
+                ->where('sucursales.condicion','=',1)->get();
+            $ventas[0]->total = Venta::join('sucursales','ventas.sucursal_id','=','sucursales.id')
+                ->where('ventas.fecha','=',$hoy)
+                ->where('sucursales.condicion','=',1)->sum('ventas.total');
 
             foreach($ventas as $ep=>$venta){
                 $desc = Desc_venta::where('venta_id','=',$venta->id)->get();
@@ -180,14 +184,20 @@ class ShareController extends Controller
         $cant = 0;
 
         if($buscar == ''){
-            $inventario=Inventario::whereMonth('fecha',Carbon::now()->month)
-            ->whereYear('fecha',Carbon::now()->year)
-            ->where('activo','=',1)
-            ->orderBy('fecha','desc')->sum('total');
+            $inventario=Inventario::join('sucursales','inventarios.sucursal_id','=','sucursales.id')
+            ->whereMonth('inventarios.fecha',Carbon::now()->month)
+            ->whereYear('inventarios.fecha',Carbon::now()->year)
+            ->where('inventarios.activo','=',1)
+            ->where('sucursales.condicion','=',1)
+            ->orderBy('inventarios.fecha','desc')->sum('inventarios.total');
 
-            $ventas = Venta::whereMonth('fecha',$fecha->month)->sum('total');
+            $ventas = Venta::join('sucursales','ventas.sucursal_id','=','sucursales.id')
+                ->whereMonth('ventas.fecha',$fecha->month)
+                ->where('sucursales.condicion','=',1)->sum('ventas.total');
 
-            $ventas_30 = Venta::where('fecha', '>=', $four_weeks)->get();
+            $ventas_30 = Venta::join('sucursales','ventas.sucursal_id','=','sucursales.id')
+                ->where('ventas.fecha', '>=', $four_weeks)
+                ->where('sucursales.condicion','=',1)->get();
 
             if(sizeof($ventas_30)){
                 foreach($ventas_30 as $ep=>$det)
@@ -237,16 +247,20 @@ class ShareController extends Controller
         $buscar = $request->buscar;
 
         if($buscar == ''){
-            $inventario=Inventario::whereMonth('fecha',Carbon::now()->month)
-            ->whereYear('fecha',Carbon::now()->year)
-            ->where('activo','=',1)
-            ->orderBy('fecha','desc')->get();
+            $inventario=Inventario::join('sucursales','inventarios.sucursal_id','=','sucursales.id')
+            ->whereMonth('inventarios.fecha',Carbon::now()->month)
+            ->whereYear('inventarios.fecha',Carbon::now()->year)
+            ->where('inventarios.activo','=',1)
+            ->where('sucursales.condicion','=',1)
+            ->orderBy('inventarios.fecha','desc')->get();
 
             $detInventario=Detalle_inventario::join('equipos','detalle_inventarios.equipo_id','=','equipos.id')
             ->select( 'detalle_inventarios.cantidad','equipos.modelo','detalle_inventarios.inventario_id','detalle_inventarios.equipo_id')
             ->where('detalle_inventarios.inventario_id','=',$inventario[0]->id)->get();
 
-            $ventas_30 = Venta::where('fecha', '>=', $four_weeks)->get();
+            $ventas_30 = Venta::join('sucursales','ventas.sucursal_id','=','sucursales.id')
+                ->where('ventas.fecha', '>=', $four_weeks)
+                ->where('sucursales.condicion','=',1)->get();
 
             if(sizeof($detInventario)){
                 foreach($detInventario as $ep=>$det)

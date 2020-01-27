@@ -159,6 +159,19 @@ class UserController extends Controller
         return ['personas'=>$personas];
     }
 
+    public function selectVendedorSucursal(Request $request){
+        $personas = User::join('personas','users.id','=','personas.id')
+            ->select('personas.id','personas.nombre','personas.apellidos','users.rol_id','users.condicion')
+            ->where('users.rol_id','=',2)
+            ->where('users.condicion','=',1)
+            ->where('users.sucursal_id','=',$request->sucursal_id)
+            ->orderBy('personas.nombre', 'desc')
+            ->orderBy('personas.apellidos', 'desc')
+            ->get();
+
+        return ['personas'=>$personas];
+    }
+
     public function excel(Request $request){
 
         $personas = User::get();

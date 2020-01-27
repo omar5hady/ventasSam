@@ -47,6 +47,9 @@
                                             <button type="button" @click="abrirModal('ver',venta)" class="btn btn-primary btn-sm">
                                                 <i class="icon-eye"></i>
                                             </button>
+                                            <button type="button" class="btn btn-danger btn-sm" @click="eliminar(venta.id)">
+                                                <i class="icon-trash"></i>
+                                            </button>
                                         </td>
                                         <td v-text="venta.pv + ' | '+venta.cadena"></td>
                                         <td v-text="venta.fecha"></td>
@@ -85,6 +88,16 @@
                         </div>
                         <div class="modal-body">
                             <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+                                <div class="form-group row" v-if="rolId == 1">
+                                    <label class="col-md-2 form-control-label" for="text-input">Sucursal</label>
+                                    <!--Criterios para el listado de busqueda -->
+                                    <div class="col-md-4">
+                                        <select class="form-control" v-model="sucursal_id" v-if="rolId == 1">
+                                            <option value="">Seleccione</option>
+                                            <option v-for="sucursal in arraySucursales" :key="sucursal.id" :value="sucursal.id" v-text="sucursal.pv + ' | ' + sucursal.cadena "></option>
+                                        </select>
+                                    </div>
+                                </div>
                                 <div class="form-group row">
                                     <label class="col-md-2 form-control-label" for="text-input">Fecha</label>
                                     <!--Criterios para el listado de busqueda -->
@@ -137,6 +150,7 @@
                         </div>
                         <div class="modal-body">
                             <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+                                
                                 <div class="form-group row">
                                     <label class="col-md-2 form-control-label" for="text-input">Fecha</label>
                                     <!--Criterios para el listado de busqueda -->
@@ -307,6 +321,7 @@
                 //Con axios se llama el metodo store de FraccionaminetoController
                 axios.post('/cortes/registrar',{
                     'fecha': this.fecha,
+                    'sucursal_id' : this.sucursal_id,
                     'data':this.arrayEquipos,
                 }).then(function (response){
                     me.listarCorte(1,''); //se enlistan nuevamente los registros
@@ -322,6 +337,35 @@
                 }).catch(function (error){
                     console.log(error);
                 });
+            },
+            eliminar(id){
+                //console.log(this.fraccionamiento_id);
+                swal({
+                title: '¿Desea eliminar?',
+                text: "Esta acción no se puede revertir!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Si, eliminar!'
+                }).then((result) => {
+                if (result.value) {
+                    let me = this;
+
+                axios.delete('/corte/eliminar', 
+                        {params: {'id': id}}).then(function (response){
+                        swal(
+                        'Borrado!',
+                        'Corte borrado correctamente.',
+                        'success'
+                        )
+                        me.listarCorte(1,'');
+                    }).catch(function (error){
+                        console.log(error);
+                    });
+                }
+                })
             },
             isNumber: function(evt) {
                 evt = (evt) ? evt : window.event;
@@ -387,6 +431,7 @@
                 this.errorVenta = 0;
                 this.errorMostrarMsjVenta = [];
                 this.arrayEquipos = [];
+                this.sucursal_id = '';
 
             },
             
@@ -397,9 +442,10 @@
                     {
                         this.getEquipos();
                         this.modal = 1;
-                        this.tituloModal = 'Registrar Ventas';
+                        this.tituloModal = 'Registrar Corte';
                         this.tipoAccion = 1;
                         this.tipo = 0;
+                        this.sucursal_id = '';
                         break;
                     }
                     case 'ver':{

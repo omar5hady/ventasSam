@@ -28,6 +28,8 @@ class InventarioController extends Controller
                         'sucursales.pv','sucursales.cadena')
                 ->whereMonth('inventarios.fecha',Carbon::now()->month)
                 ->whereYear('inventarios.fecha',Carbon::now()->year)
+                ->where('sucursales.condicion','=',1)
+                ->where('inventarios.activo','=',1)
                 ->orderBy('inventarios.fecha','desc')->take(1)->get();
             }
             else{
@@ -37,6 +39,8 @@ class InventarioController extends Controller
                 ->whereMonth('inventarios.fecha',Carbon::now()->month)
                 ->whereYear('inventarios.fecha',Carbon::now()->year)
                 ->where('inventarios.sucursal_id','=',$buscar)
+                ->where('sucursales.condicion','=',1)
+                ->where('inventarios.activo','=',1)
                 ->orderBy('inventarios.fecha','desc')->take(1)->get();
             }
             
@@ -49,6 +53,8 @@ class InventarioController extends Controller
                 ->whereMonth('inventarios.fecha',Carbon::now()->month)
                 ->whereYear('inventarios.fecha',Carbon::now()->year)
                 ->where('inventarios.sucursal_id','=',Auth::user()->sucursal_id)
+                ->where('sucursales.condicion','=',1)
+                ->where('inventarios.activo','=',1)
                 ->orderBy('inventarios.fecha','desc')->take(1)->get();
             }
             else{
@@ -57,6 +63,8 @@ class InventarioController extends Controller
                         'sucursales.pv','sucursales.cadena')
                 ->where('inventarios.fecha','=',$buscar)
                 ->where('inventarios.sucursal_id','=',Auth::user()->sucursal_id)
+                ->where('inventarios.activo','=',1)
+                ->where('sucursales.condicion','=',1)
                 ->orderBy('inventarios.fecha','desc')->take(1)->get();
             }
             
@@ -76,7 +84,13 @@ class InventarioController extends Controller
         if( !$request->ajax() )return redirect('/');
         
         $user_id = Auth::user()->id;
-        $sucursal_id = Auth::user()->sucursal_id;
+        if($request->sucursal == ''){
+            $sucursal_id = Auth::user()->sucursal_id;
+        }
+        else{
+            $sucursal_id = $request->sucursal;
+        }
+        
 
         $premium = 0;
         $smart = 0;
@@ -155,6 +169,7 @@ class InventarioController extends Controller
             ->select('inventarios.total','inventarios.total_premium','inventarios.total_smart','inventarios.activo',
                     'sucursales.pv','sucursales.cadena','inventarios.id','inventarios.fecha','inventarios.hora'
             )->where('inventarios.activo','=',1)
+            ->where('sucursales.condicion','=',1)
             ->orderBy('inventarios.sucursal_id','asc')
             ->get();
         }
@@ -163,6 +178,7 @@ class InventarioController extends Controller
                         ->select('inventarios.total','inventarios.total_premium','inventarios.total_smart','inventarios.activo',
                                 'sucursales.pv','sucursales.cadena','inventarios.id','inventarios.fecha','inventarios.hora'
                         )->where('inventarios.activo','=',1)
+                        ->where('sucursales.condicion','=',1)
                         ->where('inventarios.sucursal_id','=',$buscar)
                         ->orderBy('inventarios.sucursal_id','asc')
                         ->get();
@@ -273,6 +289,7 @@ class InventarioController extends Controller
             ->select('inventarios.total','inventarios.total_premium','inventarios.total_smart','inventarios.activo',
                     'sucursales.pv','sucursales.cadena','inventarios.id','inventarios.fecha','inventarios.hora','inventarios.sucursal_id'
             )->where('inventarios.activo','=',1)
+            ->where('sucursales.condicion','=',1)
             ->orderBy('inventarios.sucursal_id','asc')
             ->get();
         }
@@ -281,6 +298,7 @@ class InventarioController extends Controller
                         ->select('inventarios.total','inventarios.total_premium','inventarios.total_smart','inventarios.activo',
                                 'sucursales.pv','sucursales.cadena','inventarios.id','inventarios.fecha','inventarios.hora','inventarios.sucursal_id'
                         )->where('inventarios.activo','=',1)
+                        ->where('sucursales.condicion','=',1)
                         ->where('inventarios.sucursal_id','=',$buscar)
                         ->orderBy('inventarios.sucursal_id','asc')
                         ->get();

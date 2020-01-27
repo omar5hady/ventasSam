@@ -24,15 +24,20 @@ class DashboardController extends Controller
 
         if(Auth::user()->rol_id != 1){
             $cuota = Cuota::where('user_id','=',Auth::user()->id)
-            ->where('month','=',Carbon::now()->month)->get();
+            ->where('month','=',Carbon::now()->month)
+            ->where('year','=',Carbon::now()->year)->get();
         }
         else{
             if($buscar ==''){
-                $cuota = Cuota::where('month','=',Carbon::now()->month)->get();
+                $cuota = Cuota::join('users','cuotas.user_id','=','users.id')
+                ->where('cuotas.month','=',Carbon::now()->month)
+                ->where('cuotas.year','=',Carbon::now()->year)
+                ->where('users.condicion','=',1)->get();
             }
             else{
                 $cuota = Cuota::where('user_id','=',$buscar)
-                ->where('month','=',Carbon::now()->month)->get();
+                ->where('month','=',Carbon::now()->month)
+                ->where('year','=',Carbon::now()->year)->get();
             }
         }
         
@@ -53,8 +58,13 @@ class DashboardController extends Controller
         }
         else{
             if($buscar==''){
-                $corte = Corte::where('fecha','=',$hoy)->sum('total');
-                $venta = Venta::where('fecha','=',$hoy)->sum('total');
+                $corte = Corte::join('sucursales','cortes.sucursal_id','=','sucursales.id')
+                    ->where('cortes.fecha','=',$hoy)
+                    ->where('sucursales.condicion','=',1)->sum('cortes.total');
+
+                $venta = Venta::join('sucursales','ventas.sucursal_id','=','sucursales.id')
+                ->where('ventas.fecha','=',$hoy)
+                ->where('sucursales.condicion','=',1)->sum('ventas.total');
             }
             else{
                 $user = User::findOrFail($buscar);

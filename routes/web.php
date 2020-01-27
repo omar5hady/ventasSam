@@ -47,6 +47,7 @@ Route::group(['middleware' => ['auth']],function(){
     
     Route::get('/user','UserController@index');
     Route::get('/selectVendedor','UserController@selectVendedor');
+    Route::get('/selectVendedorSucursal','UserController@selectVendedorSucursal');
     Route::post('/user/registrar','UserController@store');
     Route::put('/user/actualizar','UserController@update');
     Route::put('/user/activar','UserController@activar');
@@ -61,11 +62,15 @@ Route::group(['middleware' => ['auth']],function(){
     Route::get('/ventas','VentaController@index');
     Route::get('/ventas/indexDetalle','VentaController@indexDetalle');
     Route::post('/ventas/registrar','VentaController@store');
+    Route::put('/ventas/update','VentaController@update');
+    Route::delete('/venta/detalleEliminar','VentaController@deleteDetalle');
+    Route::post('/ventas/addDetalle','VentaController@addDetalle');
 
     //// cortes
     Route::get('/cortes','CorteController@index');
     Route::get('/cortes/indexDetalle','CorteController@indexDetalle');
     Route::post('/cortes/registrar','CorteController@store');
+    Route::delete('/corte/eliminar','CorteController@delete');
 
     //// inventarios
     Route::get('/inventarios','InventarioController@index');
@@ -75,6 +80,7 @@ Route::group(['middleware' => ['auth']],function(){
     /// Cuota
     Route::get('/cuota','CuotaController@index');
     Route::post('/cuota/registrar','CuotaController@store');
+    Route::put('/cuota/update','CuotaController@update');
 
     //Share
     Route::get('/share/peso','ShareController@peso');

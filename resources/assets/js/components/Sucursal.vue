@@ -36,7 +36,6 @@
                                         <th>PV</th>
                                         <th>Cadena</th>
                                         <th>Tipo</th>
-                                        <th>Ventas Totales</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -59,9 +58,6 @@
                                                 
                                             <td v-else v-text="'Premium'"></td>
                                         </template>
-                                        <td style="width:15%">
-                                            <input type="text" pattern="\d*" @keyup.enter="updateVentas(pv.id,$event.target.value)" :id="pv.id" :value="pv.venta_total"  v-on:keypress="isNumber($event)" class="form-control" >
-                                        </td>
                                         
                                     </tr>                               
                                 </tbody>

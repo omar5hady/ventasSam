@@ -38,7 +38,7 @@
                                     <tr v-for="equipo in arrayEquipos" :key="equipo.id">
                                         <td>
                                             <button type="button" @click="abrirModal('actualizar',equipo)" class="btn btn-warning btn-sm">
-                                            <i class="icon-pencil"></i>
+                                                <i class="icon-pencil"></i>
                                             </button>
                                             <button title="Desactivar" v-if="equipo.condicion == 1" type="button" class="btn btn-danger btn-sm" @click="desactivarEquipo(equipo)">
                                                 <i class="icon-trash"></i>

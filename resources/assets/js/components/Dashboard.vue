@@ -52,7 +52,7 @@
                                             <div class="text-value-sm text-primary"><h5 style="font-weight: bold;">Alcance al día: {{this.diaAct}}</h5></div>
                                             <div class="text-value-sm">
 
-                                                <table class="table table-bordered table-striped table-sm">
+                                                <table class="table table-bordered table-striped table-sm" style="font-size:16px;">
                                                     <thead>
                                                         <tr><th></th>
                                                             <th>Total</th>
@@ -90,7 +90,7 @@
 
 
 
-                                                <div>
+                                                <div style="font-size:18px;">
                                                     <div class="card-body p-0 d-flex align-items-center">
                                                         <i class="bg-dark p-2" style="color: white;">Cuota del mes</i>
                                                         <div>
@@ -108,7 +108,7 @@
                                                     </div>
                                                     <div>
                                                         <div class="text-value-sm text-primary font-weight-bold">
-                                                            <h6>&nbsp; ${{this.formatNumber(this.faltanteCierre)}}</h6>
+                                                            <h5>${{this.formatNumber(this.faltanteCierre)}}</h5>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -120,11 +120,11 @@
                             </div>
 
                             <!-- Ventas del Dia -->
-                            <div class="col-sm-6 col-lg-5">
+                            <div class="col-sm-6 col-lg-5" style="font-size:19px;">
                                 <div class="card">
                                     <div class="card-body p-4 d-flex align-items-center">
                                         <div>
-                                            <div class="text-value-sm text-primary"><h5 style="font-weight: bold;">Ventas del día</h5></div>
+                                            <div class="text-value-sm text-primary"><h4 style="font-weight: bold;">Ventas del día</h4></div>
                                             <div class="text-value-sm">
 
                                                 <div>

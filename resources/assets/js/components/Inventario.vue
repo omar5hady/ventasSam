@@ -104,6 +104,16 @@
                         </div>
                         <div class="modal-body">
                             <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+                                <div class="form-group row" v-if="rolId == 1">
+                                    <label class="col-md-2 form-control-label" for="text-input">Sucursal</label>
+                                    <!--Criterios para el listado de busqueda -->
+                                    <div class="col-md-4">
+                                        <select class="form-control" v-model="sucursal" v-if="rolId == 1">
+                                            <option value="">Seleccione</option>
+                                            <option v-for="sucursal in arraySucursales" :key="sucursal.id" :value="sucursal.id" v-text="sucursal.pv + ' | ' + sucursal.cadena "></option>
+                                        </select>
+                                    </div>
+                                </div>
                                 <div class="form-group row">
                                     <label class="col-md-2 form-control-label" for="text-input">Fecha</label>
                                     <!--Criterios para el listado de busqueda -->
@@ -169,6 +179,7 @@
                 arrayDetalle : [],
                 arraySucursales : [],
                 sucursal_id : '',
+                sucursal : '',
                 modal : 0,
                 tituloModal : '',
                 tipoAccion: 0,
@@ -206,6 +217,7 @@
                 //Con axios se llama el metodo store de FraccionaminetoController
                 axios.post('/inventarios/registrar',{
                     'fecha': this.fecha,
+                    'sucursal' : this.sucursal,
                     'data':this.arrayEquipos,
                 }).then(function (response){
                     me.listarInventario(1,''); //se enlistan nuevamente los registros
@@ -299,6 +311,7 @@
                 this.errorVenta = 0;
                 this.errorMostrarMsjVenta = [];
                 this.arrayEquipos = [];
+                this.sucursal = '';
 
             },
             
@@ -312,6 +325,7 @@
                         this.tituloModal = 'Registrar Inventario';
                         this.tipoAccion = 1;
                         this.tipo = 0;
+                        this.sucursal = '';
                         break;
                     }
                 }

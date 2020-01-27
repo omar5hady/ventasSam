@@ -27,6 +27,7 @@ class CorteController extends Controller
                             'sucursales.pv','sucursales.cadena')
                     ->whereMonth('cortes.fecha',Carbon::now()->month)
                     ->whereYear('cortes.fecha',Carbon::now()->year)
+                    ->where('sucursales.condicion','=',1)
                     ->orderBy('cortes.fecha','asc')->paginate(31);
                 }
                 else{
@@ -36,6 +37,7 @@ class CorteController extends Controller
                     ->whereMonth('cortes.fecha',Carbon::now()->month)
                     ->whereYear('cortes.fecha',Carbon::now()->year)
                     ->where('cortes.sucursal_id','=',$sucursal_id)
+                    ->where('sucursales.condicion','=',1)
                     ->orderBy('cortes.fecha','asc')->paginate(31);
                 }
             }
@@ -45,6 +47,7 @@ class CorteController extends Controller
                     ->select('cortes.id','cortes.fecha','cortes.total',
                             'sucursales.pv','sucursales.cadena')
                     ->whereBetween('cortes.fecha', [$buscar, $buscar2])
+                    ->where('sucursales.condicion','=',1)
                     ->orderBy('cortes.fecha','asc')->paginate(31);
                 }
                 else{
@@ -52,6 +55,7 @@ class CorteController extends Controller
                     ->select('cortes.id','cortes.fecha','cortes.total',
                             'sucursales.pv','sucursales.cadena')
                     ->whereBetween('cortes.fecha', [$buscar, $buscar2])
+                    ->where('sucursales.condicion','=',1)
                     ->where('cortes.sucursal_id','=',$sucursal_id)
                     ->orderBy('cortes.fecha','asc')->paginate(31);
                 }
@@ -66,6 +70,7 @@ class CorteController extends Controller
                 ->whereMonth('cortes.fecha',Carbon::now()->month)
                 ->whereYear('cortes.fecha',Carbon::now()->year)
                 ->where('cortes.user_id','=',Auth::user()->id)
+                ->where('sucursales.condicion','=',1)
                 ->orderBy('cortes.fecha','asc')->paginate(31);
             }
             else{
@@ -74,6 +79,7 @@ class CorteController extends Controller
                         'sucursales.pv','sucursales.cadena')
                 ->whereBetween('cortes.fecha', [$buscar, $buscar2])
                 ->where('cortes.user_id','=',Auth::user()->id)
+                ->where('sucursales.condicion','=',1)
                 ->orderBy('cortes.fecha','asc')->paginate(31);
             } 
         }
@@ -100,7 +106,13 @@ class CorteController extends Controller
         if( !$request->ajax() )return redirect('/');
         
         $user_id = Auth::user()->id;
-        $sucursal_id = Auth::user()->sucursal_id;
+
+        if($request->sucursal_id == ''){
+            $sucursal_id = Auth::user()->sucursal_id;
+        }
+        else{
+            $sucursal_id = $request->sucursal_id;
+        }
 
         $premium = 0;
         $smart = 0;
@@ -136,7 +148,6 @@ class CorteController extends Controller
                         $premium+=$desc->total;
                     }
                     $desc->save();
-
                 }
             }
 
@@ -147,6 +158,13 @@ class CorteController extends Controller
         } catch (Exception $e){
             DB::rollBack();
         }
+    }
+
+    public function delete(Request $request)
+    {
+        if(!$request->ajax())return redirect('/');
+        $corte = Corte::findOrFail($request->id);
+        $corte->delete();
     }
 
     public function indexDetalle( Request $request ){
